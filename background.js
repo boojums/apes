@@ -15,11 +15,26 @@ function checkForAP(tabId, changeInfo, tab) {
 // Listen for any changes to the URL of any tab.
 chrome.tabs.onUpdated.addListener(checkForAP);
 
+function openOrFocusOptionsPage() {
+    var optionsURL = chrome.extension.getURL('options.html');
+    chrome.tabs.query({}, function(extensionTabs) {
+        var found = false;
+        for (var i=0; i < extensionTabs.length; i++) {
+            if (optionsURL == extensionTabs[i].url) {
+                found = true;
+                console.log("tab id: " + extensionTabs[i].id);
+                chrome.tabs.update(extensionTabs[i].id, {"selected": true});
+            }
+        }
+        if (found == false) {
+            chrome.tabs.create({url: "options.html"});
+        }
+    });
+}
+
 // Called when the user clicks on the browser action.
 chrome.pageAction.onClicked.addListener(function(tab) {
-    //run script to pull urls 
-    chrome.tabs.executeScript(null, 
-        {file: "contentscript.js"});
+    openOrFocusOptionsPage();
 });
 
 function onRequest(request, sender, sendResponse) {

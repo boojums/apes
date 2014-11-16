@@ -8,7 +8,7 @@
     "description": "Enhance your AP experience.",
     
     "background": {
-        "scripts": ["background.js"],
+        "scripts": ["background.js"]
     },
 
     "update_url": "http://wwww.boojumware.com/apes/updates.xml",
