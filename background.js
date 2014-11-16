@@ -35,10 +35,20 @@ chrome.pageAction.onClicked.addListener(function(tab) {
     openOrFocusOptionsPage();
 });
 
+// Called when user clicks to open all unread favorites
 function onRequest(request, sender, sendResponse) {
-
+    
+    var urls = request.user_list;
+    
+    //open urls in tabs
+    for(i=0; i<urls.length; i++) {
+        chrome.tabs.create({url: 'http://www.attackpoint.org/log.jsp/' + urls[i]}); }       
+    
+    //return nothing to let the connection be cleaned up.
+    sendResponse({});
 };
 
+
 //listen for the content script to send a message to this page
-chrome.extension.onRequest.addListener(onRequest);
+chrome.runtime.onMessage.addListener(onRequest);
 
