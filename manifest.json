@@ -1,26 +1,29 @@
 {
-	"name": "Hide unwanted Attackpoint comments",
+	"name": "Attackpoint Enhancement Suite",
 	
 	"version": "0.1",
 	
 	"manifest_version": 2,
 	
-	"description": "Hide comments from unwanted sources.",
+	"description": "Enhance your AP experience.",
 	
 	"background": {
 		"scripts": ["background.js"],
-	"update_url": "http://wwww.boojumware.com/aphide/updates.xml"
+	"update_url": "http://wwww.boojumware.com/apes/updates.xml"
 	},
 	
 	"page_action": {
 		//"default_icon": "icon.png", //optional
-		"default_title": "Hide comments" //optional
+		"default_title": "Enhance AP" //optional
 		//"default_popup": "popup.html" //optional - don't want it if you have an onClicked action
 	},
 	
 	"permissions": [
+		"storage",
 		"tabs",
 		"http://*.attackpoint.org/",
 		"http://attackpoint.org/"
-	]
+	],
+
+	"options_page": "options.html"
 }
