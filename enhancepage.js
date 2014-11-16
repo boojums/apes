@@ -38,15 +38,13 @@ if(regex.test(document.body.innerText)) {
     cell.appendChild(newcontent);
     
     
-} else {
-    //no match found - maybe some kind of alert should be triggered, or perhaps the icon shouldn't show
+} else if (document.getElementById('messages')){
+
     // load everything from localStorage
     chrome.storage.local.get(null, function(result) {
-        enhancePage(result);
-    });
-
-    function enhancePage(settings) {
+        settings = result;
         console.log(settings);
+    
         tagged_users = settings.taggedUsers;
         hide_users = settings.hideUsers;
         chicken_users = settings.chickenUsers;
@@ -93,7 +91,7 @@ if(regex.test(document.body.innerText)) {
             
         }
 
-    }
+    });
 }
 
 //window.onload = initShowHideContent;
