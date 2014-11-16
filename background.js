@@ -6,15 +6,13 @@ function checkForAP(tabId, changeInfo, tab) {
     if (tab.url.indexOf("attackpoint.org") > -1) {
         // ... show the page action.
         chrome.pageAction.show(tabId);
-    
-        chrome.tabs.executeScript(null, 
-            {file:"contentscript.js"});
     }
 }
 
 // Listen for any changes to the URL of any tab.
 chrome.tabs.onUpdated.addListener(checkForAP);
 
+// from: http://adamfeuer.com/notes/2013/01/26/chrome-extension-making-browser-action-icon-open-options-page/
 function openOrFocusOptionsPage() {
     var optionsURL = chrome.extension.getURL('options.html');
     chrome.tabs.query({}, function(extensionTabs) {

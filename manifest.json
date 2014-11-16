@@ -16,7 +16,7 @@
     "content_scripts": [
         {
             "matches": ["http://*.attackpoint.org/*"],
-            "js": ["contentscript.js"]
+            "js": ["enhancepage.js"]
         }
     ],
     
