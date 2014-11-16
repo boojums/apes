@@ -11,6 +11,13 @@
 		"scripts": ["background.js"],
 	"update_url": "http://wwww.boojumware.com/apes/updates.xml"
 	},
+
+	"content_scripts": [
+		{
+			"matches": ["http://*.attackpoint.org/*"],
+			"js": ["contentscript.js"]
+		}
+	],
 	
 	"page_action": {
 		//"default_icon": "icon.png", //optional
