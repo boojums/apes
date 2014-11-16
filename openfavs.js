@@ -16,6 +16,9 @@ if(regex.test(document.body.innerText)) {
     var newcontent = document.createElement('a');
     newcontent.text = 'open all';
     newcontent.href = 'javascript:void(0)';
+    newcontent.id = 'openall'
+    // TODO: be better to separate out (?), but then need to check that 
+    // openall exists
     newcontent.addEventListener("click", function() {
 
         // Find user id's of unread favorites
@@ -32,3 +35,5 @@ if(regex.test(document.body.innerText)) {
 } else {
     console.log('nothing to see here...')
 }
+
+//document.getElementById('openall').addEventListener('click', saveOptions);

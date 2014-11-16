@@ -4,7 +4,7 @@
     - chickenUsers: [userid] 
 */
 
-populate()
+//populate()
 // populate data data
 function populate() {
     var hideUsers = ['4380', '470'];
@@ -17,7 +17,7 @@ function populate() {
 
     console.log(settings);
 
-    chrome.storage.local.set(settings, function() {
+    chrome.storage.sync.set(settings, function() {
         // Update status to let user know options were saved.
         var status = document.getElementById('status');
         status.textContent = 'Options saved.';
@@ -36,8 +36,8 @@ function saveOptions() {
     var select = document.getElementById("taggedUsers");
     var taggedUsers = select.children[select.selectedIndex].value;
     console.log(taggedUsers)
-    chrome.storage.local.set({'taggedUsers':taggedUsers});
-    // chrome.storage.local.set({'taggedUsers': taggedUsers}, function() {
+    chrome.storage.sync.set({'taggedUsers':taggedUsers});
+    // chrome.storage.sync.set({'taggedUsers': taggedUsers}, function() {
     //     // Update status to let user know options were saved.
     //     var status = document.getElementById('status');
     //     status.textContent = 'Options saved.';
@@ -47,7 +47,7 @@ function saveOptions() {
     //         1500);
     //});
 
-    chrome.storage.local.get('taggedUsers', function(result) {
+    chrome.storage.sync.get('taggedUsers', function(result) {
         if(result.taggedUsers) {
             console.log(result.taggedUsers);
         } else {
@@ -57,7 +57,7 @@ function saveOptions() {
 }
 
 function eraseOptions() {
-    chrome.storage.local.removeItem("taggedUsers");
+    chrome.storage.sync.removeItem("taggedUsers");
     location.reload();
 }
 

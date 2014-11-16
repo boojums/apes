@@ -11,8 +11,8 @@ var lowWord_regex = /\b[a-z]+\w*\b/g;
 // Only run if we are on a page with discussion messages
 if (document.getElementById('messages')){
 
-    // load everything from localStorage
-    chrome.storage.local.get(null, function(result) {
+    // load everything from syncStorage
+    chrome.storage.sync.get(null, function(result) {
         settings = result;
         console.log(settings);
     
