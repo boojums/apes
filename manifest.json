@@ -17,7 +17,13 @@
         {
             "matches": ["http://*.attackpoint.org/*"],
             "js": ["enhancepage.js"]
+        },
+        
+        {
+            "matches": ["http://*.attackpoint.org/"],
+            "js": ["openfavs.js"]
         }
+
     ],
     
     "page_action": {

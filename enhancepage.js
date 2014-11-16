@@ -1,44 +1,15 @@
-
+/*
+    Injected into all AP pages and modifies discussion sections based
+    on users that have been tagged, marked for hiding, or chickenified.
+*/
 
 var user_regex = /user_[0-9]*/;
 var word_regex = /\b\w+\b/g;
 var capWord_regex = /\b[A-Z]+\w*\b/g;
 var lowWord_regex = /\b[a-z]+\w*\b/g;
 
-
-var regex = /unread\:[1-9]/;
-
-
-//test the text of the body element against our regex
-if(regex.test(document.body.innerText)) {
-    
-    favtable = document.getElementsByClassName('favlist')[0];
-    lastrow = favtable.getElementsByClassName('morestuff')[0]; 
-    console.log(lastrow);
-    cell = lastrow.cells[0];
-    //oldcontent = cell.innerHTML;
-    //console.log(oldcontent);
-
-    var newcontent = document.createElement('a');
-    newcontent.text = 'open all';
-    newcontent.href = 'javascript:void(0)';
-    newcontent.addEventListener("click", function() {
-        //favorites chunk
-        var chunk = String(document.body.innerHTML.match(/unread[\s\S]*more logs/));
-    
-        //var users_regex = /user_[0-9]*/g;
-        var users = chunk.match(/user_[0-9]*/g);
-    
-        // the regex produced a match, so notify background script
-        // and attempt to send it the array of users 
-        chrome.runtime.sendMessage({"user_list": users}, function(response) {});
-    });
-    console.log(newcontent);
-    cell.appendChild(document.createTextNode(" | "));
-    cell.appendChild(newcontent);
-    
-    
-} else if (document.getElementById('messages')){
+// Only run if we are on a page with discussion messages
+if (document.getElementById('messages')){
 
     // load everything from localStorage
     chrome.storage.local.get(null, function(result) {
@@ -49,7 +20,6 @@ if(regex.test(document.body.innerText)) {
         hide_users = settings.hideUsers;
         chicken_users = settings.chickenUsers;
 
-        // TODO: error checking here, this isn't always necessary
         var msgs = document.getElementById('messages').
                 getElementsByClassName('discussion_post');
 
