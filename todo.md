@@ -2,3 +2,4 @@
 - use ajax for update
 - popup for options?
 - click on chicken text to unchickenify
+- http://d3js.org/ for graphing, though probably not for this project
