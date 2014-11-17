@@ -1,4 +1,4 @@
-- use jquery for basic DOM manipulation
+- use jquery for basic DOM manipulation (like toggleClass for hide/show?)
 - use ajax for update
 - popup for options?
 - click on chicken text to unchickenify
