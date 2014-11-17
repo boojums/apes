@@ -1,0 +1,4 @@
+- use jquery for basic DOM manipulation
+- use ajax for update
+- popup for options?
+- click on chicken text to unchickenify
