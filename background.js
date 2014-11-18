@@ -1,17 +1,53 @@
 // Copyright (c) 2014 Cristina Luis
 
+// TODO: use a badge on browserAction:
+// browserAction.setBadgeText and browserAction.setBadgeBackrgoundColor
 
-// Called when the url of a tab changes.
+
+// For use with a page action, shows when AP is the current page
+// 
+/*
 function checkForAP(tabId, changeInfo, tab) {
-    // If the string 'attackpoint.org' is found in the tab's URL...
     if (tab.url.indexOf("attackpoint.org") > -1) {
         // ... show the page action.
-        chrome.browserAction.show(tabId);
+        chrome.browserPage.show(tabId);
     }
 }
+*/
 
 // Listen for any changes to the URL of any tab.
-chrome.tabs.onUpdated.addListener(checkForAP);
+//chrome.tabs.onUpdated.addListener(checkForAP);
+
+// ajax requests for log page to see if there are new comments
+// TODO: take url as arg, either call checking function
+// or retrieve url's tables here
+(function worker() {
+    $.ajax({
+        url: logurl,
+        success: function(data) {
+            if(logurl.search('log.jsp')) {
+                var table = parseCommentTable(data);
+                console.log(table);
+                // get old table
+                chrome.storage.sync.get(null, function(result) {
+                    //console.log(result);
+                    var oldtable = result.pages[logurl];
+                    console.log(oldtable);
+                    var result = compareCommentTables(oldtable, table);
+                    console.log(result)
+                });
+            } else if(url.search('discussionthread.jsp')) {
+                //compare CRCs here
+            }
+        },
+        complete: function() {
+            // schedule next request for 10 minutse for now
+            //setTimeout(worker, 600000)
+        }
+    });
+})();
+
+
 
 // from: http://adamfeuer.com/notes/2013/01/26/chrome-extension-making-browser-action-icon-open-options-page/
 function openOrFocusOptionsPage() {

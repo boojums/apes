@@ -3,10 +3,16 @@
     on users that have been tagged, marked for hiding, or chickenified.
 */
 
-var user_regex = /user_[0-9]*/;
+
+// TODO: migrate to jquery?
+// TODO: remove javascript(void(0)) placements
+
+// Regex patterns for chickenifying discussion posts
 var word_regex = /\b\w+\b/g;
 var capWord_regex = /\b[A-Z]+\w*\b/g;
 var lowWord_regex = /\b[a-z]+\w*\b/g;
+
+
 
 // Only run if we are on a page with discussion messages
 if (document.getElementById('messages')){
