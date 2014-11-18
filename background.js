@@ -17,6 +17,68 @@ function checkForAP(tabId, changeInfo, tab) {
 
 // Listen for any changes to the URL of any tab.
 //chrome.tabs.onUpdated.addListener(checkForAP);
+// Generate crc32 table for use in crc32 for changed pages
+// see: http://stackoverflow.com/questions/18638900/javascript-crc32
+var makeCRCTable = function(){
+    var c;
+    var crcTable = [];
+    for(var n =0; n < 256; n++){
+        c = n;
+        for(var k =0; k < 8; k++){
+            c = ((c&1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+        }
+        crcTable[n] = c;
+    }
+    return crcTable;
+}
+
+// Return crc for a given string. Uses makeCRCTable
+var crc32 = function(str) {
+    var crcTable = window.crcTable || (window.crcTable = makeCRCTable());
+    var crc = 0 ^ (-1);
+
+    for (var i = 0; i < str.length; i++ ) {
+        crc = (crc >>> 8) ^ crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
+    }
+
+    return (crc ^ (-1)) >>> 0;
+};
+
+// Parses out the message number and how many comments there are for 
+// the 'recent comments' table block on a log page.
+// Returns an array of objects with }msg: x num: n}
+var parseCommentTable = function(html) {
+    // matches message_1234567>blahblahblah<td>3
+    // captures message id# and number of messages in thread
+    re = /message_(\d+)">(?:.*?)\s*<td>(\d+)/g
+
+    var data = {};
+    html.replace(re, function(match, p1, p2) {
+        data[p1] = parseInt(p2);
+    });
+
+    return data;
+}
+
+// Compare two comment tables from a log to check if they 
+// are the same. 
+// Returns true if they are the same.
+var compareCommentTables = function(oldtable, newtable) {
+    // Only need to check that all the new discussions exist --
+    // (older messages can 'roll off' the page) and have the same
+    // number of messages
+    for (var disc in newtable) {
+        if (newtable.hasOwnProperty(disc)) {
+            if (oldtable[disc] != newtable[disc]) {
+                console.log(oldtable[disc]);
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+var logurl = "http://www.attackpoint.org/log.jsp/user_2820";
 
 // ajax requests for log page to see if there are new comments
 // TODO: take url as arg, either call checking function
@@ -46,7 +108,6 @@ function checkForAP(tabId, changeInfo, tab) {
         }
     });
 })();
-
 
 
 // from: http://adamfeuer.com/notes/2013/01/26/chrome-extension-making-browser-action-icon-open-options-page/
