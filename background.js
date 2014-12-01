@@ -17,6 +17,9 @@ function checkForAP(tabId, changeInfo, tab) {
 
 // Listen for any changes to the URL of any tab.
 //chrome.tabs.onUpdated.addListener(checkForAP);
+
+chrome.browserAction.setBadgeText({text: ''});
+
 // Generate crc32 table for use in crc32 for changed pages
 // see: http://stackoverflow.com/questions/18638900/javascript-crc32
 var makeCRCTable = function(){
@@ -60,6 +63,7 @@ var parseCommentTable = function(html) {
     return data;
 }
 
+// TODO: change name to be more intuitive
 // Compare two comment tables from a log to check if they 
 // are the same. 
 // Returns true if they are the same.
@@ -78,7 +82,22 @@ var compareCommentTables = function(oldtable, newtable) {
     return true;
 }
 
-var logurl = "http://www.attackpoint.org/log.jsp/user_2820";
+var logurl = "http://www.attackpoint.org/log.jsp/user_540";
+//var logurl = "http://attackpoint.org";
+
+var element = document.createElement("iframe"); 
+element.setAttribute('id', 'myframe');
+element.setAttribute('height', 1000);
+element.setAttribute('width', 1000);
+document.body.appendChild(element);
+
+
+(function reloadiframe() {
+    element.src = logurl;
+    console.log('done loading')
+    setTimeout(reloadiframe, 20000);
+})();
+
 
 // ajax requests for log page to see if there are new comments
 // TODO: take url as arg, either call checking function
@@ -86,22 +105,38 @@ var logurl = "http://www.attackpoint.org/log.jsp/user_2820";
 (function worker() {
     $.ajax({
         url: logurl,
+        cache: false,
+        crossDomain: true,
+
+        xhrFields: { 
+            withCredentials: true},
+
         success: function(data) {
             if(logurl.search('log.jsp')) {
+                //console.log(data);
                 var table = parseCommentTable(data);
-                console.log(table);
+                //console.log(table);
                 // get old table
                 chrome.storage.sync.get(null, function(result) {
                     //console.log(result);
                     var oldtable = result.pages[logurl];
                     console.log(oldtable);
-                    var result = compareCommentTables(oldtable, table);
-                    console.log(result)
+                    /*
+                    var same = compareCommentTables(oldtable, table);
+                    console.log(same)
+                    if(!same) {
+                    // save new table if different
+                    // check current page (or use counter?)
+                    // need to keep track of how man? or just a generic badge?
+                        chrome.browserAction.setBadgeText({text: 'x'});
+                    
+                    } */
                 });
             } else if(url.search('discussionthread.jsp')) {
                 //compare CRCs here
             }
         },
+        
         complete: function() {
             // schedule next request for 10 minutse for now
             //setTimeout(worker, 600000)

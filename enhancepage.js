@@ -4,14 +4,14 @@
 */
 
 
-// TODO: migrate to jquery?
+// TODO: migrate to jquery
+// TODO: separate functions for each process
 // TODO: remove javascript(void(0)) placements
 
 // Regex patterns for chickenifying discussion posts
 var word_regex = /\b\w+\b/g;
 var capWord_regex = /\b[A-Z]+\w*\b/g;
 var lowWord_regex = /\b[a-z]+\w*\b/g;
-
 
 
 // Only run if we are on a page with discussion messages
@@ -34,6 +34,7 @@ if (document.getElementById('messages')){
             var user = user_element.innerHTML.match(/user_[0-9]*/)[0].slice(5);
             
             // TODO: just hide the text, not their entire existance?
+            // TODO: do not implement in version 1
             if (hide_users.indexOf(user) != -1) {
                 if (msgs[i].style.display == 'none') {
                     msgs[i].style.display = 'inherit';
@@ -43,6 +44,10 @@ if (document.getElementById('messages')){
                     msgs[i].style.display = 'none';
                 }
             } else {
+                //
+                // Username tagging
+                //
+                // TODO: tagging function?
                 // TODO: add (t) link to name block to add tag to user
                 if (user in tagged_users) {
                     var tagged = user_element.getElementsByClassName('tag')[0];
@@ -55,6 +60,10 @@ if (document.getElementById('messages')){
                         user_element.appendChild(newcontent)
                     }
                 }
+                // 
+                // Chickenify
+                //
+                // TODO: chickenify function
                 // TODO: write chickenify() to handle all the searching and replacing
                 if (chicken_users.indexOf(user) != -1) {
                     post = msgs[i].getElementsByClassName("discussion_post_body")[0];

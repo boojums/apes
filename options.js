@@ -2,24 +2,54 @@
     - taggedUsers: {userid: text}
     - ignoreUsers: [userid]
     - chickenUsers: [userid]
+TODO: separate this one out:
     - pages: {url: info:(obj/crc)}
 */
 
+// TODO: Use a db for storage instead? sloppy to have to retrieve all and then replace all
 // TODO: css for options.html so that links to remove are clicky
 // TODO: make this a popup instead?
 // TODO: move ajax to background.js
 // TODO: reorganize storage to make more sense?
 
+//userinfo from: http://attackpoint.org/jsonuserinfo.jsp?userid=470
+
+
+// Function uses AP's own lastreadmessages function to 
+// see if function has been read, but this has many issues, not ideal
+// Problem with this technique is that you need the message numbers to check,
+// so you need to load the whole page and parse out the message id's anyway.
+(function worker() {
+    $.ajax({
+        url: "http://www.attackpoint.org/jsonlastreadmsgs.jsp?t=" + new Date().getTime(),
+        cache: false,
+        crossDomain: true,
+        dataType: "json",
+        type: "POST",
+        data: {messageids: 1014164},
+        xhrFields: { 
+            withCredentials: true},
+
+        success: function(data) {
+            console.log(data)
+        },
+        
+        complete: function() {
+            // schedule next request for 10 minutse for now
+            //setTimeout(worker, 600000)
+        }
+    });
+})();
 
 
 //populate()
 // populate data 
 function populate() {
-    var hideUsers = ['4380', '470'];
+    var hideUsers = ['4380'];
     var chickenUsers = ['100', '5029'];
     var taggedUsers = {'100': 'Canadian', '44': 'wise man'};
     var pages = {"http://www.attackpoint.org/log.jsp/user_2820":
-                {1012930: 6,
+                {1012930: 5,
                         1011447: 2,
                         1012324: 12,
                         1011445: 2}
