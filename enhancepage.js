@@ -4,79 +4,87 @@
 */
 
 
-// TODO: migrate to jquery
-// TODO: separate functions for each process
-// TODO: remove javascript(void(0)) placements
-
 // Regex patterns for chickenifying discussion posts
 var word_regex = /\b\w+\b/g;
 var capWord_regex = /\b[A-Z]+\w*\b/g;
 var lowWord_regex = /\b[a-z]+\w*\b/g;
 
+var user_regex = /user_([0-9]*)/;
 
-// Only run if we are on a page with discussion messages
-if (document.getElementById('messages')){
-
-    // load everything from syncStorage
-    chrome.storage.sync.get(null, function(result) {
-        settings = result;
-        console.log(settings);
-    
-        tagged_users = settings.taggedUsers;
-        hide_users = settings.hideUsers;
-        chicken_users = settings.chickenUsers;
-
-        var msgs = document.getElementById('messages').
-                getElementsByClassName('discussion_post');
-
-        for (var i=0; i<msgs.length; i++) {
-            var user_element = msgs[i].getElementsByClassName("discussion_post_name")[0];
-            var user = user_element.innerHTML.match(/user_[0-9]*/)[0].slice(5);
-            
-            // TODO: just hide the text, not their entire existance?
-            // TODO: do not implement in version 1
-            if (hide_users.indexOf(user) != -1) {
-                if (msgs[i].style.display == 'none') {
-                    msgs[i].style.display = 'inherit';
-                } else {
-                    //note: use following to leave gap where msg was
-                    //msgs[i].style.visibility = 'hidden' 
-                    msgs[i].style.display = 'none';
-                }
-            } else {
-                //
-                // Username tagging
-                //
-                // TODO: tagging function?
-                // TODO: add (t) link to name block to add tag to user
-                if (user in tagged_users) {
-                    var tagged = user_element.getElementsByClassName('tag')[0];
-                    if (!tagged) {
-                        var newcontent = document.createElement("div");
-                        newcontent.className = 'tag';
-                        newcontent.style.color = "#aaaaaa";
-                        newcontent.style.fontSize = "11px";
-                        newcontent.innerHTML = tagged_users[user];
-                        user_element.appendChild(newcontent)
-                    }
-                }
-                // 
-                // Chickenify
-                //
-                // TODO: chickenify function
-                // TODO: write chickenify() to handle all the searching and replacing
-                if (chicken_users.indexOf(user) != -1) {
-                    post = msgs[i].getElementsByClassName("discussion_post_body")[0];
-                    old_text = post.innerHTML
-                    new_text = old_text.replace(capWord_regex, "Chicken");
-                    new_text = new_text.replace(lowWord_regex, "chicken");
-                    post.innerHTML = new_text
-                }
-            }
-            
-        }
-
-    });
+// Converts text of element to 'chickens'. Caps retained, numbers and punctuation retained.
+// TODO: click to return old text
+function chickenify(elem) {
+    old_text = $(elem).text();
+    new_text = old_text.replace(capWord_regex, "Chicken");
+    new_text = new_text.replace(lowWord_regex, "chicken");
+    $(elem).text(new_text);
 }
 
-//window.onload = initShowHideContent;
+// Add tag under username in discussion posts
+function show_tag(elem, tag) {
+    // Don't do anything if it already has a tag
+    if ($(elem).hasClass('#tag')) {
+        return;
+    }
+    var newcontent = document.createElement("div");
+    newcontent.className = 'tag';
+    newcontent.style.color = "#aaaaaa";
+    newcontent.style.fontSize = "11px";
+    newcontent.innerHTML = tagged_users[user];
+    $(elem).append(newcontent)
+}
+
+// TODO: just hide the text, not their entire existance?
+// TODO: do not implement in version 1
+function hide_post(elem) {
+
+    //$(elem).next().toggle()
+    
+    // if (post.style.display == 'none') {
+    //     post.style.display = 'inherit';
+    // } else {
+    //     //note: use following to leave gap where msg was
+    //     //msgs[i].style.visibility = 'hidden' 
+    //     post.style.display = 'none';
+    // }
+}
+
+
+(function() {
+    // Only run if we are on a page with discussion messages
+    if (document.getElementById('messages')) {
+
+        // load everything from syncStorage
+        chrome.storage.sync.get(null, function(result) {
+            settings = result;
+            //console.log(settings);
+        
+            tagged_users = settings.taggedUsers;
+            hide_users = settings.hideUsers;
+            chicken_users = settings.chickenUsers;
+
+            // TODO: should only be within id messages
+            // (try next + selector)
+            $('.discussion_post_name').each(function(index) {
+                var user_str = user_regex.exec($(this).html());
+                if(user_str) {
+                    user = user_str[1];
+                }
+                
+                // Keep out of v1
+                //if (hide_users.indexOf(user) != -1) {
+                //    hide_post(this);
+                //}
+
+                if (chicken_users.indexOf(user) != -1) {
+                    chickenify($(this).next());
+                }
+
+                if (user in tagged_users) {
+                    tag = tagged_users[user];
+                    show_tag(this, tag);
+                }
+            });
+        });
+    }
+})();

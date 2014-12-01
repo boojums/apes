@@ -1,4 +1,3 @@
-- convert enhacepage.js to use jquery
 - pick one method for changed page function
 -- start with just user log comments
 - figure out storage method for options

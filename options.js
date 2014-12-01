@@ -47,7 +47,7 @@ TODO: separate this one out:
 function populate() {
     var hideUsers = ['4380'];
     var chickenUsers = ['100', '5029'];
-    var taggedUsers = {'100': 'Canadian', '44': 'wise man'};
+    var taggedUsers = {'100': 'Canadian', '44': 'wise man', '6265': 'skier'};
     var pages = {"http://www.attackpoint.org/log.jsp/user_2820":
                 {1012930: 5,
                         1011447: 2,
