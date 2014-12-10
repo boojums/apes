@@ -49,7 +49,7 @@ var crc32 = function(str) {
 
 // Parses out the message number and how many comments there are for 
 // the 'recent comments' table block on a log page.
-// Returns an array of objects with }msg: x num: n}
+// Returns an array of objects with {msg: x num: n}
 var parseCommentTable = function(html) {
     // matches message_1234567>blahblahblah<td>3
     // captures message id# and number of messages in thread
@@ -168,7 +168,8 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     openOrFocusOptionsPage();
 });
 
-// Called when user clicks to open all unread favorites
+// Opens all unread favorites in separate tabs
+// Message is sent from openfavs.js when user clicks on 'open all' link
 function onRequest(request, sender, sendResponse) {
     
     var urls = request.user_list;
