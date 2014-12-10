@@ -1,10 +1,13 @@
-- use jquery for basic DOM manipulation (like toggleClass for hide/show?)
-- use ajax for update
-- popup for options?
-- click on chicken text to unchickenify
-- http://d3js.org/ for graphing, though probably not for this project
+ Cleaning up:
+ ☐ use jquery for basic DOM manipulation (like toggleClass for hide/show?)
+ ☐ use ajax for update
+ ☐ popup for options?
+ ☐ click on chicken text to unchickenify
+ ☐ pick one method for changed page function
+   ☐ start with just user log comments
+ ☐ figure out storage method for options
+ ☐ basic option page
 
-- pick one method for changed page function
--- start with just user log comments
-- figure out storage method for options
-- basic option page
+
+Future:
+ ☐ http://d3js.org/ for graphing, though probably not for this project
