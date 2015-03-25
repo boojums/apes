@@ -18,6 +18,11 @@ function chickenify(elem) {
     new_text = old_text.replace(capWord_regex, "Chicken");
     new_text = new_text.replace(lowWord_regex, "chicken");
     $(elem).text(new_text);
+
+    $(elem).click([old_text, new_text], function(event) {
+        ($(elem).text() === event.data[1]) ? $(elem).text(event.data[0]) : $(elem).text(event.data[1]);
+    });
+
 }
 
 // Add tag under username in discussion posts
@@ -34,8 +39,9 @@ function show_tag(elem, tag) {
     $(elem).append(newcontent)
 }
 
+// Chickenify covers the idea of hiding -- hiding itself is too harsh, I think
+// Not implimented in version 1!
 // TODO: just hide the text, not their entire existance?
-// TODO: do not implement in version 1
 function hide_post(elem) {
 
     //$(elem).next().toggle()
