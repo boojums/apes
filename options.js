@@ -1,6 +1,6 @@
 /* Storage object needs to hold:
     - taggedUsers: {userid: text}
-    - ignoreUsers: [userid]
+    (- ignoreUsers: [userid])
     - chickenUsers: [userid]
 TODO: separate this one out:
     - pages: {url: info:(obj/crc)}
@@ -16,7 +16,7 @@ TODO: separate this one out:
 
 
 // Function uses AP's own lastreadmessages function to 
-// see if function has been read, but this has many issues, not ideal
+// see if message has been read, but this has many issues, not ideal
 // Problem with this technique is that you need the message numbers to check,
 // so you need to load the whole page and parse out the message id's anyway.
 (function worker() {
@@ -48,11 +48,11 @@ function populate() {
     var hideUsers = ['4380'];
     var chickenUsers = ['100', '5029'];
     var taggedUsers = {'100': 'Canadian', '44': 'wise man', '6265': 'skier'};
-    var pages = {"http://www.attackpoint.org/log.jsp/user_2820":
-                {1012930: 5,
+    var pages = {"http://www.attackpoint.org/log.jsp/user_920":
+                    {   1012930: 5,
                         1011447: 2,
                         1012324: 12,
-                        1011445: 2}
+                        1011445: 2 }
                 }
 
     var settings = {hideUsers: hideUsers, 

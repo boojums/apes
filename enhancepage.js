@@ -12,13 +12,13 @@ var lowWord_regex = /\b[a-z]+\w*\b/g;
 var user_regex = /user_([0-9]*)/;
 
 // Converts text of element to 'chickens'. Caps retained, numbers and punctuation retained.
-// TODO: click to return old text
 function chickenify(elem) {
     old_text = $(elem).text();
     new_text = old_text.replace(capWord_regex, "Chicken");
     new_text = new_text.replace(lowWord_regex, "chicken");
     $(elem).text(new_text);
 
+    // Click text to toggle between original and chickenified
     $(elem).click([old_text, new_text], function(event) {
         ($(elem).text() === event.data[1]) ? $(elem).text(event.data[0]) : $(elem).text(event.data[1]);
     });
@@ -66,7 +66,7 @@ function hide_post(elem) {
             //console.log(settings);
         
             tagged_users = settings.taggedUsers;
-            hide_users = settings.hideUsers;
+            //hide_users = settings.hideUsers;
             chicken_users = settings.chickenUsers;
 
             // TODO: should only be within id messages

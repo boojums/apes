@@ -18,6 +18,7 @@ function checkForAP(tabId, changeInfo, tab) {
 // Listen for any changes to the URL of any tab.
 //chrome.tabs.onUpdated.addListener(checkForAP);
 
+// Start with a blank badge
 chrome.browserAction.setBadgeText({text: ''});
 
 // Generate crc32 table for use in crc32 for changed pages
@@ -66,8 +67,8 @@ var parseCommentTable = function(html) {
 // TODO: change name to be more intuitive
 // Compare two comment tables from a log to check if they 
 // are the same. 
-// Returns true if they are the same.
-var compareCommentTables = function(oldtable, newtable) {
+// Returns true if they are different.
+var commentTableChanged = function(oldtable, newtable) {
     // Only need to check that all the new discussions exist --
     // (older messages can 'roll off' the page) and have the same
     // number of messages
@@ -75,14 +76,14 @@ var compareCommentTables = function(oldtable, newtable) {
         if (newtable.hasOwnProperty(disc)) {
             if (oldtable[disc] != newtable[disc]) {
                 console.log(oldtable[disc]);
-                return false;
+                return true;
             }
         }
     }
-    return true;
+    return false;
 }
 
-var logurl = "http://www.attackpoint.org/log.jsp/user_540";
+var logurl = "http://www.attackpoint.org/log.jsp/user_920";
 //var logurl = "http://attackpoint.org";
 
 var element = document.createElement("iframe"); 
@@ -113,24 +114,17 @@ document.body.appendChild(element);
 
         success: function(data) {
             if(logurl.search('log.jsp')) {
-                //console.log(data);
                 var table = parseCommentTable(data);
-                //console.log(table);
+                console.log(table);
                 // get old table
                 chrome.storage.sync.get(null, function(result) {
-                    //console.log(result);
                     var oldtable = result.pages[logurl];
                     console.log(oldtable);
-                    /*
-                    var same = compareCommentTables(oldtable, table);
-                    console.log(same)
-                    if(!same) {
-                    // save new table if different
-                    // check current page (or use counter?)
-                    // need to keep track of how man? or just a generic badge?
-                        chrome.browserAction.setBadgeText({text: 'x'});
                     
-                    } */
+                    if (commentTableChanged(oldtable, table)) {
+                        // save new table
+                        chrome.browserAction.setBadgeText({text: 'c'});
+                    } 
                 });
             } else if(url.search('discussionthread.jsp')) {
                 //compare CRCs here
@@ -138,8 +132,8 @@ document.body.appendChild(element);
         },
         
         complete: function() {
-            // schedule next request for 10 minutse for now
-            //setTimeout(worker, 600000)
+            // schedule next request for 1 minutse for now
+            //setTimeout(worker, 60000)
         }
     });
 })();
