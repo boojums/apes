@@ -73,18 +73,17 @@ var commentTableChanged = function(oldtable, newtable) {
     // (older messages can 'roll off' the page) and have the same
     // number of messages
     for (var disc in newtable) {
-        if (newtable.hasOwnProperty(disc)) {
+        if (oldtable.hasOwnProperty(disc)) {
             if (oldtable[disc] != newtable[disc]) {
                 console.log(oldtable[disc]);
                 return true;
             }
-        }
+        } else return true;
     }
     return false;
 }
 
-var logurl = "http://www.attackpoint.org/log.jsp/user_920";
-//var logurl = "http://attackpoint.org";
+var logurl = "http://www.attackpoint.org/log.jsp/user_470";
 
 // ajax requests for log page to see if there are new comments
 // TODO: take url as arg, either call checking function
@@ -118,8 +117,8 @@ var logurl = "http://www.attackpoint.org/log.jsp/user_920";
         },
         
         complete: function() {
-            // schedule next request for 1 minutse for now
-            //setTimeout(worker, 60000)
+            // schedule next request for 1 minute from now
+            setTimeout(worker, 60000)
         }
     });
 })();
