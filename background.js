@@ -86,20 +86,6 @@ var commentTableChanged = function(oldtable, newtable) {
 var logurl = "http://www.attackpoint.org/log.jsp/user_920";
 //var logurl = "http://attackpoint.org";
 
-var element = document.createElement("iframe"); 
-element.setAttribute('id', 'myframe');
-element.setAttribute('height', 1000);
-element.setAttribute('width', 1000);
-document.body.appendChild(element);
-
-
-(function reloadiframe() {
-    element.src = logurl;
-    console.log('done loading')
-    setTimeout(reloadiframe, 20000);
-})();
-
-
 // ajax requests for log page to see if there are new comments
 // TODO: take url as arg, either call checking function
 // or retrieve url's tables here
