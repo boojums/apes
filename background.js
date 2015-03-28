@@ -3,20 +3,23 @@
 // TODO: use a badge on browserAction:
 // browserAction.setBadgeText and browserAction.setBadgeBackrgoundColor
 
+// debugging
+var checkloguser = 470;
 
-// For use with a page action, shows when AP is the current page
-// 
-/*
-function checkForAP(tabId, changeInfo, tab) {
-    if (tab.url.indexOf("attackpoint.org") > -1) {
-        // ... show the page action.
-        chrome.browserPage.show(tabId);
+// Check to see if user is on their log page
+function checkForLog(tabId, changeInfo, tab) {
+    var checkstring = 'attackpoint.org/log.jsp/user_' + String(checkloguser);
+    if (tab.url.search(checkstring) > 0)  {
+        chrome.browserAction.setBadgeText({text: ''});
+        // TODO: update storage with new table
+        chrome.storage.sync.set({
+            //favoriteColor: color
+        });
     }
 }
-*/
 
 // Listen for any changes to the URL of any tab.
-//chrome.tabs.onUpdated.addListener(checkForAP);
+chrome.tabs.onUpdated.addListener(checkForLog);
 
 // Start with a blank badge
 chrome.browserAction.setBadgeText({text: ''});
@@ -98,7 +101,7 @@ var logurl = "http://www.attackpoint.org/log.jsp/user_470";
             withCredentials: true},
 
         success: function(data) {
-            if(logurl.search('log.jsp')) {
+            if(logurl.search('log.jsp') > 0) {
                 var table = parseCommentTable(data);
                 console.log(table);
                 // get old table
@@ -107,7 +110,6 @@ var logurl = "http://www.attackpoint.org/log.jsp/user_470";
                     console.log(oldtable);
                     
                     if (commentTableChanged(oldtable, table)) {
-                        // save new table
                         chrome.browserAction.setBadgeText({text: 'c'});
                     } 
                 });
