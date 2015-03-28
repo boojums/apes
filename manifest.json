@@ -44,5 +44,12 @@
         "http://attackpoint.org/"
     ],
 
-    "options_page": "options.html"
+    // Deprecated from Chrome 40 
+    "options_page": "options.html",
+
+    // New style options from Chrome 40
+    "options_ui" : {
+        "page": "options.html",
+        "chrome_style": true
+    }
 }
