@@ -1,10 +1,12 @@
 // Copyright (c) 2014 Cristina Luis
 
-// TODO: use a badge on browserAction:
-// browserAction.setBadgeText and browserAction.setBadgeBackrgoundColor
+
+// TODO: add listener (to background?) for changes to storage once tagging implemented in-place
+// chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 // debugging
 var checkloguser = 470;
+var logurl = "http://www.attackpoint.org/log.jsp/user_470";
 
 // Check to see if user is on their log page
 function checkForLog(tabId, changeInfo, tab) {
@@ -37,7 +39,7 @@ var makeCRCTable = function(){
         crcTable[n] = c;
     }
     return crcTable;
-}
+};
 
 // Return crc for a given string. Uses makeCRCTable
 var crc32 = function(str) {
@@ -65,7 +67,7 @@ var parseCommentTable = function(html) {
     });
 
     return data;
-}
+};
 
 // TODO: change name to be more intuitive
 // Compare two comment tables from a log to check if they 
@@ -78,15 +80,13 @@ var commentTableChanged = function(oldtable, newtable) {
     for (var disc in newtable) {
         if (oldtable.hasOwnProperty(disc)) {
             if (oldtable[disc] != newtable[disc]) {
-                console.log(oldtable[disc]);
                 return true;
             }
         } else return true;
     }
     return false;
-}
+};
 
-var logurl = "http://www.attackpoint.org/log.jsp/user_470";
 
 // ajax requests for log page to see if there are new comments
 // TODO: take url as arg, either call checking function
@@ -103,12 +103,9 @@ var logurl = "http://www.attackpoint.org/log.jsp/user_470";
         success: function(data) {
             if(logurl.search('log.jsp') > 0) {
                 var table = parseCommentTable(data);
-                console.log(table);
                 // get old table
                 chrome.storage.sync.get(null, function(result) {
-                    var oldtable = result.pages[logurl];
-                    console.log(oldtable);
-                    
+                    var oldtable = result.pages[logurl];                    
                     if (commentTableChanged(oldtable, table)) {
                         chrome.browserAction.setBadgeText({text: 'c'});
                     } 
