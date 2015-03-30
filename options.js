@@ -41,12 +41,13 @@ function populate() {
     });
 }
 
+// TODO: replace existing table info for proper update
 // TODO: look up username from:
 //      http://attackpoint.org/userprofile.jsp/user_470
 function loadOptions() {
     chrome.storage.sync.get(null, function(result) {
         var chickenUsers = result.chickenUsers;
-        
+  
         var userString = '';        
         for (var user in chickenUsers) {
             userString += '<tr><td>' + chickenUsers[user] + '</td>' +
@@ -55,18 +56,6 @@ function loadOptions() {
         }
         $('#chicken-users > tbody:last').append(userString);
 
-        $('.remove-chicken').click(function() {
-            //remove user from list and update the storage list
-            var usernum = $(this).attr('id').slice(8); 
-            var index = chickenUsers.indexOf(usernum);
-            if (index > -1) {
-                chickenUsers.splice(index, 1);
-            }
-            chrome.storage.sync.set({'chickenUsers':chickenUsers});
-            // TODO: remove entire table row
-            $(this).remove();
-        });
-        
         var taggedUsers = result.taggedUsers;
         userString = '';
         for (user in taggedUsers) {
@@ -109,6 +98,41 @@ function eraseOptions() {
 document.addEventListener('DOMContentLoaded', loadOptions);
 document.getElementById('save').addEventListener('click', saveOptions);
 $("#populate").click(populate);
+
+
+$("#add-chicken-user").click(function() {
+    // TODO: field validation
+    var user = $("#chicken-user-field").val();
+    chrome.storage.sync.get('chickenUsers', function(result) {
+        chickenUsers = result.chickenUsers;
+        chickenUsers.push(user);
+        chrome.storage.sync.set({'chickenUsers':chickenUsers});
+        
+        var userString = '<tr><td>' + user + '</td>' +
+                '<td class="remove-chicken" id="chicken-' + user + '">' + 
+                '[x]</rd></tr>';
+        $('#chicken-users > tbody:last').append(userString);
+
+        var statustext = "User " + user + " chickenified.";
+        $("#status").text(statustext);
+
+    });
+
+    $("#chicken-user-field").val("");
+});
+
+// Make new chicken users removable on click
+$(document).on("click", ".remove-chicken", function() {
+    //remove user from list and update the storage list
+    var usernum = $(this).attr('id').slice(8); 
+    var index = chickenUsers.indexOf(usernum);
+    if (index > -1) {
+        chickenUsers.splice(index, 1);
+    }
+    chrome.storage.sync.set({'chickenUsers':chickenUsers});
+    // TODO: remove entire table row
+    $(this).parent().remove();
+});
 
 
 

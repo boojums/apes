@@ -3,6 +3,12 @@
 <head>
     <title>Options for AP Enhancement Suite</title>
     <style>
+        input[type=checkbox], input[type=radio]:
+        {
+          vertical-align: -2px;
+          margin: 4;
+          padding: 0;
+        }
         body: { padding: 10px; }
     </style>
 </head>
@@ -19,8 +25,10 @@
     <h1>Chickenified Users</h1>
     <table id='chicken-users'>
         <tbody>
-        </tbody>        
-    </table>    
+        </tbody>
+    </table>
+    <input id='chicken-user-field' type=text></input>
+    <button style="background-color: green;" id='add-chicken-user'>Add Chicken</button>
 
     <h1>Follow my log</h1>
 
