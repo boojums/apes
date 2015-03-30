@@ -95,10 +95,6 @@ function eraseOptions() {
     location.reload();
 }
 
-document.addEventListener('DOMContentLoaded', loadOptions);
-document.getElementById('save').addEventListener('click', saveOptions);
-$("#populate").click(populate);
-
 
 $("#add-chicken-user").click(function() {
     // TODO: field validation
@@ -114,26 +110,38 @@ $("#add-chicken-user").click(function() {
         $('#chicken-users > tbody:last').append(userString);
 
         var statustext = "User " + user + " chickenified.";
-        $("#status").text(statustext);
-
+        var status = $("#status");
+        status.text(statustext);   
+        setTimeout(function() {
+            console.log('in timeout');
+            status.text('');
+            }, 
+            1500);
     });
 
     $("#chicken-user-field").val("");
 });
 
 // Make new chicken users removable on click
-$(document).on("click", ".remove-chicken", function() {
+$(document).on("click", ".remove-chicken", function(event) {
     //remove user from list and update the storage list
-    var usernum = $(this).attr('id').slice(8); 
-    var index = chickenUsers.indexOf(usernum);
-    if (index > -1) {
-        chickenUsers.splice(index, 1);
-    }
-    chrome.storage.sync.set({'chickenUsers':chickenUsers});
-    // TODO: remove entire table row
-    $(this).parent().remove();
+    var usernum = $(event.target).attr('id').slice(8); 
+
+    chrome.storage.sync.get('chickenUsers', function(result) {
+        var chickenUsers = result.chickenUsers;
+
+        var index = chickenUsers.indexOf(usernum);
+        if (index > -1) {
+            chickenUsers.splice(index, 1);
+        }
+        chrome.storage.sync.set({'chickenUsers':chickenUsers});
+        $(event.target).parent().remove();
+    });
 });
 
+document.addEventListener('DOMContentLoaded', loadOptions);
+document.getElementById('save').addEventListener('click', saveOptions);
+$("#populate").click(populate);
 
 
 // Function uses AP's own lastreadmessages function to 
