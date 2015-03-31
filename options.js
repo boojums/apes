@@ -7,9 +7,6 @@ TODO: separate this one out:
 */
 
 // TODO: make this a popup instead?
-// TODO: checkboxes, save instead of immediate change?
-
-//userinfo from: http://attackpoint.org/jsonuserinfo.jsp?userid=470
 
 // populate data for debugging
 function populate() {
@@ -41,63 +38,69 @@ function populate() {
     });
 }
 
-// TODO: replace existing table info for proper update
-// TODO: look up username from:
-//      http://attackpoint.org/userprofile.jsp/user_470
+// Lookup username from:
+// from: http://attackpoint.org/jsonuserinfo.jsp?userid=470
+// and update fields where it occurs
+function insertUsername(user) {
+    $.getJSON( "http://attackpoint.org/jsonuserinfo.jsp", {
+            "userid": user
+        }, 
+        function(data) {
+            // TODO: error checking
+            $("#chicken-"+user).prev().text(data.username);
+            $("#tag-"+user).prev().text(data.username);            
+        });
+}
+
+function showChickenStatus(statusText) {
+    var status = $("#chicken-status");
+    status.text(statusText);   
+    setTimeout(function() {
+        status.text('');
+        }, 
+        1500);
+}
+
 function loadOptions() {
     chrome.storage.sync.get(null, function(result) {
         var chickenUsers = result.chickenUsers;
   
         var userString = '';        
-        for (var user in chickenUsers) {
-            userString += '<tr><td>' + chickenUsers[user] + '</td>' +
-                '<td class="remove-chicken" id="chicken-' + chickenUsers[user] + '">' + 
-                '[x]</rd></tr>';
+        for (var i in chickenUsers) {
+            userString += '<tr><td>' + chickenUsers[i] + '</td>' +
+                '<td class="remove-chicken" id="chicken-' + chickenUsers[i] + '">' + 
+                '[x]</td></tr>';
         }
         $('#chicken-users > tbody:last').append(userString);
+        for (i in chickenUsers) {
+            insertUsername(chickenUsers[i]);
+        }
 
         var taggedUsers = result.taggedUsers;
         userString = '';
-        for (user in taggedUsers) {
-            userString += '<tr><td>' + user + '</td><td>' + taggedUsers[user] + '</rd></tr>';
+        for (var user in taggedUsers) {
+            userString += '<tr><td>' + user + '</td><td id="tag-'+user+'">' + taggedUsers[user] + '</rd></tr>';
         }
         $('#tagged-users > tbody:last').append(userString);
+        for (user in taggedUsers) {
+            insertUsername(user);
+        }
 
     });
 }
 
 function saveOptions() {
-    var select = document.getElementById("taggedUsers");
-    var taggedUsers = select.children[select.selectedIndex].value;
-    console.log(taggedUsers)
-    chrome.storage.sync.set({'taggedUsers':taggedUsers});
-    // chrome.storage.sync.set({'taggedUsers': taggedUsers}, function() {
-    //     // Update status to let user know options were saved.
-    //     var status = document.getElementById('status');
-    //     status.textContent = 'Options saved.';
-    //     setTimeout(function() {
-    //         status.textContent = '';
-    //         }, 
-    //         1500);
-    //});
 
-    chrome.storage.sync.get('taggedUsers', function(result) {
-        if(result.taggedUsers) {
-            console.log(result.taggedUsers);
-        } else {
-            console.log('something wrong')
-        }
-    });
 }
 
 function eraseOptions() {
-    chrome.storage.sync.removeItem("taggedUsers");
-    location.reload();
+
 }
 
-
+// Action to add a chicken user on click
 $("#add-chicken-user").click(function() {
-    // TODO: field validation
+    // TODO: validation of user
+    // TODO: check for duplicate user
     var user = $("#chicken-user-field").val();
     chrome.storage.sync.get('chickenUsers', function(result) {
         chickenUsers = result.chickenUsers;
@@ -108,21 +111,16 @@ $("#add-chicken-user").click(function() {
                 '<td class="remove-chicken" id="chicken-' + user + '">' + 
                 '[x]</rd></tr>';
         $('#chicken-users > tbody:last').append(userString);
+        insertUsername(user);
 
-        var statustext = "User " + user + " chickenified.";
-        var status = $("#status");
-        status.text(statustext);   
-        setTimeout(function() {
-            console.log('in timeout');
-            status.text('');
-            }, 
-            1500);
+        var statusText = "User " + user + " chickenified.";
+        showChickenStatus(statusText);
     });
 
     $("#chicken-user-field").val("");
 });
 
-// Make new chicken users removable on click
+// Make sure new chicken users are removable on click
 $(document).on("click", ".remove-chicken", function(event) {
     //remove user from list and update the storage list
     var usernum = $(event.target).attr('id').slice(8); 
@@ -136,11 +134,15 @@ $(document).on("click", ".remove-chicken", function(event) {
         }
         chrome.storage.sync.set({'chickenUsers':chickenUsers});
         $(event.target).parent().remove();
+
+        var statusText = "User " + usernum + " unchickenified.";
+        showChickenStatus(statusText);
     });
 });
 
 document.addEventListener('DOMContentLoaded', loadOptions);
 document.getElementById('save').addEventListener('click', saveOptions);
+// Populate storage For debugging
 $("#populate").click(populate);
 
 
