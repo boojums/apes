@@ -8,6 +8,12 @@ TODO: separate this one out:
 
 // TODO: make this a popup instead?
 
+
+// TODO: removal x for tags
+// TODO: make x's grey or something to make them stand out
+// TODO: method for saving tagged text changes
+
+
 // populate data for debugging
 function populate() {
     var chickenUsers = ['100', '5029'];
@@ -48,7 +54,7 @@ function insertUsername(user) {
         function(data) {
             // TODO: error checking
             $("#chicken-"+user).prev().text(data.username);
-            $("#tag-"+user).prev().text(data.username);            
+            $("#tag-username-"+user).text(data.username);            
         });
 }
 
@@ -60,6 +66,16 @@ function showChickenStatus(statusText) {
         }, 
         1500);
 }
+
+function showTaggedStatus(statusText) {
+    var status = $("#tagged-status");
+    status.text(statusText);   
+    setTimeout(function() {
+        status.text('');
+        }, 
+        1500);
+}
+
 
 function loadOptions() {
     chrome.storage.sync.get(null, function(result) {
@@ -78,12 +94,15 @@ function loadOptions() {
 
         var taggedUsers = result.taggedUsers;
         userString = '';
-        for (var user in taggedUsers) {
-            userString += '<tr><td>' + user + '</td><td id="tag-'+user+'">' + taggedUsers[user] + '</rd></tr>';
+        for (var usernum in taggedUsers) {
+            userString += '<tr><td id="tag-username-'+usernum+'">' + usernum + '</td>' +
+            '<td><input type="text" id="tag-'+usernum+'" value="' + taggedUsers[usernum] + '"></input></rd>' + 
+            '<td class="remove-tagged" id="tagged-' + usernum + '">' + 
+                '[x]</td></tr>';
         }
         $('#tagged-users > tbody:last').append(userString);
-        for (user in taggedUsers) {
-            insertUsername(user);
+        for (usernum in taggedUsers) {
+            insertUsername(usernum);
         }
 
     });
@@ -96,6 +115,54 @@ function saveOptions() {
 function eraseOptions() {
 
 }
+
+// Action to add a tagged user on click
+$("#add-tagged-user").click(function() {
+    // TODO: validation of user
+    // TODO: check for duplicate user
+    var usernum = $("#tagged-user-field").val();
+    chrome.storage.sync.get('taggedUsers', function(result) {
+        var taggedUsers = result.taggedUsers;
+        console.log(taggedUsers);
+        taggedUsers[usernum] = 'change me';
+        console.log(taggedUsers);
+        chrome.storage.sync.set({'taggedUsers':taggedUsers});
+
+        var userString = '<tr><td id="tag-username-'+usernum+'">' + usernum + '</td>' +
+            '<td><input type="text" id="tag-'+usernum+'" value="' + taggedUsers[usernum] + '"></input></rd>' + 
+            '<td class="remove-tagged" id="tagged-' + usernum + '">' + 
+                '[x]</td></tr>';
+        $('#tagged-users > tbody:last').append(userString);
+        insertUsername(usernum);
+
+        var statusText = "User " + usernum + " tagged.";
+        showTaggedStatus(statusText);
+    });
+
+    $("#tagged-user-field").val("");
+});
+
+// Action to save edited tag
+
+// Make sure new tagged users are removable on click
+$(document).on("click", ".remove-tagged", function(event) {
+    //remove user from list and update the storage list
+    var usernum = $(event.target).attr('id').slice(7); 
+    console.log(usernum);
+
+    chrome.storage.sync.get('taggedUsers', function(result) {
+        var taggedUsers = result.taggedUsers;
+
+        delete taggedUsers[usernum];
+        chrome.storage.sync.set({'taggedUsers':taggedUsers});
+        $(event.target).parent().remove();
+
+        var statusText = "User " + usernum + " untagged.";
+        showTaggedStatus(statusText);
+    });
+});
+
+
 
 // Action to add a chicken user on click
 $("#add-chicken-user").click(function() {
