@@ -6,14 +6,6 @@ TODO: separate this one out:
     - pages: {url: info:(obj/crc)}
 */
 
-// TODO: make this a popup instead?
-
-
-// TODO: removal x for tags
-// TODO: make x's grey or something to make them stand out
-// TODO: method for saving tagged text changes
-
-
 // populate data for debugging
 function populate() {
     var chickenUsers = ['100', '5029'];
@@ -84,7 +76,7 @@ function loadOptions() {
         var userString = '';        
         for (var i in chickenUsers) {
             userString += '<tr><td>' + chickenUsers[i] + '</td>' +
-                '<td class="remove-chicken" id="chicken-' + chickenUsers[i] + '">' + 
+                '<td class="remove-chicken" id="chicken-' + chickenUsers[i] + '" style="color:grey">' + 
                 '[x]</td></tr>';
         }
         $('#chicken-users > tbody:last').append(userString);
@@ -96,8 +88,8 @@ function loadOptions() {
         userString = '';
         for (var usernum in taggedUsers) {
             userString += '<tr><td id="tag-username-'+usernum+'">' + usernum + '</td>' +
-            '<td><input type="text" id="tag-'+usernum+'" value="' + taggedUsers[usernum] + '"></input></rd>' + 
-            '<td class="remove-tagged" id="tagged-' + usernum + '">' + 
+            '<td><input class="tag-field" type="text" id="tag-'+usernum+'" value="' + taggedUsers[usernum] + '"></input></rd>' + 
+            '<td class="remove-tagged" id="tagged-' + usernum + '" style="color:grey">' + 
                 '[x]</td></tr>';
         }
         $('#tagged-users > tbody:last').append(userString);
@@ -119,7 +111,7 @@ function eraseOptions() {
 // Action to add a tagged user on click
 $("#add-tagged-user").click(function() {
     // TODO: validation of user
-    // TODO: check for duplicate user
+    // TODO: check for duplicate user -- don't overwrite tag - notice that user already tagged
     var usernum = $("#tagged-user-field").val();
     chrome.storage.sync.get('taggedUsers', function(result) {
         var taggedUsers = result.taggedUsers;
@@ -129,7 +121,7 @@ $("#add-tagged-user").click(function() {
         chrome.storage.sync.set({'taggedUsers':taggedUsers});
 
         var userString = '<tr><td id="tag-username-'+usernum+'">' + usernum + '</td>' +
-            '<td><input type="text" id="tag-'+usernum+'" value="' + taggedUsers[usernum] + '"></input></rd>' + 
+            '<td><input class="tag-field" type="text" id="tag-'+usernum+'" value="' + taggedUsers[usernum] + '"></input></rd>' + 
             '<td class="remove-tagged" id="tagged-' + usernum + '">' + 
                 '[x]</td></tr>';
         $('#tagged-users > tbody:last').append(userString);
@@ -142,13 +134,30 @@ $("#add-tagged-user").click(function() {
     $("#tagged-user-field").val("");
 });
 
+
+
 // Action to save edited tag
+$(document).on("change", ".tag-field", function(event) {
+    
+    // Save edited tag
+    var usernum = $(event.target).attr('id').slice(7);
+    chrome.storage.sync.get('taggedUsers', function(result) {
+        var taggedUsers = result.taggedUsers;
+        console.log(taggedUsers);
+        taggedUsers[usernum] = 'change me';
+        console.log(taggedUsers);
+        chrome.storage.sync.set({'taggedUsers':taggedUsers});
+
+        var statusText = "Tag updated.";
+        showTaggedStatus(statusText);
+    });
+
+});
 
 // Make sure new tagged users are removable on click
 $(document).on("click", ".remove-tagged", function(event) {
     //remove user from list and update the storage list
     var usernum = $(event.target).attr('id').slice(7); 
-    console.log(usernum);
 
     chrome.storage.sync.get('taggedUsers', function(result) {
         var taggedUsers = result.taggedUsers;
