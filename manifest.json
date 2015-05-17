@@ -22,7 +22,7 @@
         
         {
             "matches": ["http://*.attackpoint.org/"],
-            "js": ["openfavs.js"]
+            "js": ["openfavs.js", "jquery-1.11.1.min.js"]
         }
 
     ],

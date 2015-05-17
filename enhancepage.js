@@ -12,6 +12,7 @@ var lowWord_regex = /\b[a-z]+\w*\b/g;
 var user_regex = /user_([0-9]*)/;
 
 // Converts text of element to 'chickens'. Caps retained, numbers and punctuation retained.
+// TODO: save everything inside, not just text... need spacing, images, links, etc.
 function chickenify(elem) {
     old_text = $(elem).text();
     new_text = old_text.replace(capWord_regex, "Chicken");
@@ -63,7 +64,6 @@ function hide_post(elem) {
         // load everything from syncStorage
         chrome.storage.sync.get(null, function(result) {
             settings = result;
-            //console.log(settings);
         
             tagged_users = settings.taggedUsers;
             //hide_users = settings.hideUsers;

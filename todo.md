@@ -11,3 +11,5 @@
 
 Future:
  ☐ http://d3js.org/ for graphing, though probably not for this project
+ stardate time option
+ 

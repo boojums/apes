@@ -5,10 +5,12 @@
 
 // regex for 'unread: n', which only shows up if there are unread favorites
 // catches anything that isn't 0
-var regex = /unread\:[1-9]/;
+var unreadregex = /unread\:[1-9]/;
+
+// TODO: clean this up, use jquery perhaps?
 
 // first see if we are on a page with unread favorites
-if(regex.test(document.body.innerText)) {
+if(unreadregex.test(document.body.innerText)) {
     
     favtable = document.getElementsByClassName('favlist')[0];
     lastrow = favtable.getElementsByClassName('morestuff')[0]; 

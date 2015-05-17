@@ -97,8 +97,9 @@ var commentTableChanged = function(oldtable, newtable) {
         cache: false,
         crossDomain: true,
 
-        xhrFields: { 
-            withCredentials: true},
+        // TODO: testing here so that the c doesn't disappear from the front page
+        //xhrFields: { 
+        //    withCredentials: true},
 
         success: function(data) {
             if(logurl.search('log.jsp') > 0) {
