@@ -8,50 +8,25 @@
 var checkloguser = 470;
 var logurl = "http://www.attackpoint.org/log.jsp/user_470";
 
-// Check to see if user is on their log page
-function checkForLog(tabId, changeInfo, tab) {
-    var checkstring = 'attackpoint.org/log.jsp/user_' + String(checkloguser);
-    if (tab.url.search(checkstring) > 0)  {
-        chrome.browserAction.setBadgeText({text: ''});
-        // TODO: update storage with new table
-        chrome.storage.sync.set({
-            //favoriteColor: color
-        });
-    }
+function updateTable(content) {
+    data = parseCommentTable(content);
+    chrome.storage.sync.set({'logMessages': data}); 
+    // TODO: callback here for safety?
 }
 
 // Listen for any changes to the URL of any tab.
-chrome.tabs.onUpdated.addListener(checkForLog);
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+    var checkstring = 'attackpoint.org/log.jsp/user_' + String(checkloguser);
+    if (tab.url.search(checkstring) > 0)  {
+        chrome.browserAction.setBadgeText({text: ''});
+        if (changeInfo.status == "complete") {
+            chrome.tabs.sendMessage(tab.id, {text: 'get_content'}, updateTable);
+        }
+    }
+});
 
 // Start with a blank badge
 chrome.browserAction.setBadgeText({text: ''});
-
-// Generate crc32 table for use in crc32 for changed pages
-// see: http://stackoverflow.com/questions/18638900/javascript-crc32
-var makeCRCTable = function(){
-    var c;
-    var crcTable = [];
-    for(var n =0; n < 256; n++){
-        c = n;
-        for(var k =0; k < 8; k++){
-            c = ((c&1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
-        }
-        crcTable[n] = c;
-    }
-    return crcTable;
-};
-
-// Return crc for a given string. Uses makeCRCTable
-var crc32 = function(str) {
-    var crcTable = window.crcTable || (window.crcTable = makeCRCTable());
-    var crc = 0 ^ (-1);
-
-    for (var i = 0; i < str.length; i++ ) {
-        crc = (crc >>> 8) ^ crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
-    }
-
-    return (crc ^ (-1)) >>> 0;
-};
 
 // Parses out the message number and how many comments there are for 
 // the 'recent comments' table block on a log page.
@@ -59,17 +34,16 @@ var crc32 = function(str) {
 var parseCommentTable = function(html) {
     // matches message_1234567>blahblahblah<td>3
     // captures message id# and number of messages in thread
-    re = /message_(\d+)">(?:.*?)\s*<td>(\d+)/g
-
+    re = /message_(\d+).*">(?:.*?)\s*<td>(\d+)/g
     var data = {};
     html.replace(re, function(match, p1, p2) {
         data[p1] = parseInt(p2);
     });
 
+    console.log('data', data);
     return data;
 };
 
-// TODO: change name to be more intuitive
 // Compare two comment tables from a log to check if they 
 // are the same. 
 // Returns true if they are different.
@@ -101,12 +75,13 @@ var commentTableChanged = function(oldtable, newtable) {
         //xhrFields: { 
         //    withCredentials: true},
 
+        
         success: function(data) {
             if(logurl.search('log.jsp') > 0) {
                 var table = parseCommentTable(data);
                 // get old table
                 chrome.storage.sync.get(null, function(result) {
-                    var oldtable = result.pages[logurl];                    
+                    var oldtable = result.logMessages;                    
                     if (commentTableChanged(oldtable, table)) {
                         chrome.browserAction.setBadgeText({text: 'c'});
                     } 
@@ -116,6 +91,7 @@ var commentTableChanged = function(oldtable, newtable) {
             }
         },
         
+        
         complete: function() {
             // schedule next request for 1 minute from now
             setTimeout(worker, 60000)
@@ -124,6 +100,9 @@ var commentTableChanged = function(oldtable, newtable) {
 })();
 
 
+/////////////////
+// Options page
+/////////////////
 // from: http://adamfeuer.com/notes/2013/01/26/chrome-extension-making-browser-action-icon-open-options-page/
 function openOrFocusOptionsPage() {
     var optionsURL = chrome.extension.getURL('options.html');
@@ -147,6 +126,9 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     openOrFocusOptionsPage();
 });
 
+//////////////////////////
+// Open all unreads
+//////////////////////////
 // Opens all unread favorites in separate tabs
 // Message is sent from openfavs.js when user clicks on 'open all' link
 function onRequest(request, sender, sendResponse) {
@@ -161,7 +143,37 @@ function onRequest(request, sender, sendResponse) {
     sendResponse({});
 };
 
-
 //listen for the content script to send a message to this page
 chrome.runtime.onMessage.addListener(onRequest);
 
+
+//////////////////////////////////////////////////
+// CRC table stuff -- not currently used
+//////////////////////////////////////////////////
+
+// Generate crc32 table for use in crc32 for changed pages
+// see: http://stackoverflow.com/questions/18638900/javascript-crc32
+var makeCRCTable = function(){
+    var c;
+    var crcTable = [];
+    for(var n =0; n < 256; n++){
+        c = n;
+        for(var k =0; k < 8; k++){
+            c = ((c&1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+        }
+        crcTable[n] = c;
+    }
+    return crcTable;
+};
+
+// Return crc for a given string. Uses makeCRCTable
+var crc32 = function(str) {
+    var crcTable = window.crcTable || (window.crcTable = makeCRCTable());
+    var crc = 0 ^ (-1);
+
+    for (var i = 0; i < str.length; i++ ) {
+        crc = (crc >>> 8) ^ crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
+    }
+
+    return (crc ^ (-1)) >>> 0;
+};

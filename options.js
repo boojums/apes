@@ -10,6 +10,12 @@ TODO: separate this one out:
 function populate() {
     var chickenUsers = ['100', '5029'];
     var taggedUsers = {'100': 'Canadian', '44': 'wise man', '6265': 'skier'};
+    var logMessages = {                       
+                        1012930: 5,
+                        1011447: 2,
+                        1012324: 12,
+                        1011445: 2 
+                      };
     var pages = {"http://www.attackpoint.org/log.jsp/user_470":
                     {   
                         1012930: 5,
@@ -21,7 +27,8 @@ function populate() {
 
     var settings = {chickenUsers: chickenUsers,
                     taggedUsers: taggedUsers,
-                    pages: pages}
+                    pages: pages,
+                    logMessages: logMessages}
     console.log("populating:");
     console.log(settings);
 
