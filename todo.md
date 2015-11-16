@@ -8,6 +8,9 @@
  ☐ basic option page
  ☐ new branch for hide users stuff
  ☐ error checking for storage (might be empty!)
+ ☐ when is highlighting affected? does reading the rss do it?
+ 
+
 
 
 Future:

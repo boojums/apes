@@ -61,43 +61,58 @@ var commentTableChanged = function(oldtable, newtable) {
     return false;
 };
 
+// Try using the rss feed to get discussion status instead of scraping the page
+// Might be possible to just get the top item and check that -- that should 
+// always change if there is a cahnge to any discussion
+// This method has the advantage of (perhaps) not affecting the new discussion
+// highlighting on the log page
+(function worker() {
+    feed_url = 'http://attackpoint.org/discussion-rss.jsp/refs-8.470/user_470';
+    $.get(feed_url, function (data) {
+        $(data).find("item").each(function() {
+            var el = $(this);
+            console.log(el.text());
+            // Pull out messageid string for comparison
+        });
+    });
+})();
 
 // ajax requests for log page to see if there are new comments
 // TODO: take url as arg, either call checking function
 // or retrieve url's tables here
-(function worker() {
-    $.ajax({
-        url: logurl,
-        cache: false,
-        crossDomain: true,
+// (function worker() {
+//     $.ajax({
+//         url: logurl,
+//         cache: false,
+//         crossDomain: true,
 
-        // TODO: testing here so that the c doesn't disappear from the front page
-        //xhrFields: { 
-        //    withCredentials: true},
+//         // TODO: testing here so that the c doesn't disappear from the front page
+//         //xhrFields: { 
+//         //    withCredentials: true},
 
         
-        success: function(data) {
-            if(logurl.search('log.jsp') > 0) {
-                var table = parseCommentTable(data);
-                // get old table
-                chrome.storage.sync.get(null, function(result) {
-                    var oldtable = result.logMessages;                    
-                    if (commentTableChanged(oldtable, table)) {
-                        chrome.browserAction.setBadgeText({text: 'c'});
-                    } 
-                });
-            } else if(url.search('discussionthread.jsp')) {
-                //compare CRCs here
-            }
-        },
+//         success: function(data) {
+//             if(logurl.search('log.jsp') > 0) {
+//                 var table = parseCommentTable(data);
+//                 // get old table
+//                 chrome.storage.sync.get(null, function(result) {
+//                     var oldtable = result.logMessages;                    
+//                     if (commentTableChanged(oldtable, table)) {
+//                         chrome.browserAction.setBadgeText({text: 'c'});
+//                     } 
+//                 });
+//             } else if(url.search('discussionthread.jsp')) {
+//                 //compare CRCs here
+//             }
+//         },
         
         
-        complete: function() {
-            // schedule next request for 1 minute from now
-            setTimeout(worker, 60000)
-        }
-    });
-})();
+//         complete: function() {
+//             // schedule next request for 1 minute from now
+//             setTimeout(worker, 60000)
+//         }
+//     });
+// })();
 
 
 /////////////////
