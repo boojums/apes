@@ -94,13 +94,3 @@ function hide_post(elem) {
         });
     }
 })();
-
-
-// Listen for request from background page
-chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-    if (msg.text === 'get_content') {
-        // TODO: only pass sidebar 
-        content = $(".sb").html();
-        sendResponse(content);
-    }
-});
