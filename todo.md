@@ -7,6 +7,7 @@
  ✔ figure out storage method for options @done (15-03-28 22:44)
  ☐ basic option page
  ☐ new branch for hide users stuff
+ ☐ error checking for storage (might be empty!)
 
 
 Future:
