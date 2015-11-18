@@ -57,6 +57,7 @@ function insertUsername(user) {
         });
 }
 
+// TODO: just make one function...
 function showChickenStatus(statusText) {
     var status = $("#chicken-status");
     status.text(statusText);   
@@ -75,8 +76,17 @@ function showTaggedStatus(statusText) {
         1500);
 }
 
+function showFlagStatus(statusText) {
+    var status = $('#status');
+    status.text(statusText);
+    setTimeout(function() {
+        status.text('');
+        },
+        1500);
+}
 
 function loadOptions() {
+    console.log('loading options');
     chrome.storage.sync.get(null, function(result) {
         var chickenUsers = result.chickenUsers;
   
@@ -201,6 +211,13 @@ $("#add-chicken-user").click(function() {
     });
 
     $("#chicken-user-field").val("");
+});
+
+
+// Action to follow log on click
+$("#flag").change(function() {
+        var statusText = "Following your log";
+        showFlagStatus(statusText);
 });
 
 // Make sure new chicken users are removable on click

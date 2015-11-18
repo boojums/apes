@@ -89,27 +89,8 @@ var parseCommentXML = function(xml) {
 /////////////////
 // Options page
 /////////////////
-// from: http://adamfeuer.com/notes/2013/01/26/chrome-extension-making-browser-action-icon-open-options-page/
-function openOrFocusOptionsPage() {
-    var optionsURL = chrome.extension.getURL('options.html');
-    chrome.tabs.query({}, function(extensionTabs) {
-        var found = false;
-        for (var i=0; i < extensionTabs.length; i++) {
-            if (optionsURL == extensionTabs[i].url) {
-                found = true;
-                console.log("tab id: " + extensionTabs[i].id);
-                chrome.tabs.update(extensionTabs[i].id, {"selected": true});
-            }
-        }
-        if (found == false) {
-            chrome.tabs.create({url: "options.html"});
-        }
-    });
-}
-
-// Called when the user clicks on the browser action.
 chrome.browserAction.onClicked.addListener(function(tab) {
-    openOrFocusOptionsPage();
+    chrome.runtime.openOptionsPage()
 });
 
 //////////////////////////

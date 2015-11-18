@@ -6,23 +6,27 @@
 
 // Regex patterns for chickenifying discussion posts
 var word_regex = /\b\w+\b/g;
+
 var capWord_regex = /\b[A-Z]+\w*\b/g;
 var lowWord_regex = /\b[a-z]+\w*\b/g;
+var test_lo_regex = /\b[a-z]+\w*\b(?![^<]*>)/g;
+var test_hi_regex = /\b[A-Z]+\w*\b(?![^<]*>)/g;
 
 var user_regex = /user_([0-9]*)/;
 
 // Converts text of element to 'chickens'. Caps retained, numbers and punctuation retained.
 // TODO: save everything inside, not just text... need spacing, images, links, etc.
 function chickenify(elem) {
-    old_text = $(elem).text();
-    new_text = old_text.replace(capWord_regex, "Chicken");
-    new_text = new_text.replace(lowWord_regex, "chicken");
-    $(elem).text(new_text);
+    old_text = $(elem).html()
+    $(elem).html($(elem).html().replace(test_lo_regex, "chicken"));
+    $(elem).html($(elem).html().replace(test_hi_regex, "Chicken"));
+    new_text = $(elem).html()
 
     // Click text to toggle between original and chickenified
     $(elem).click([old_text, new_text], function(event) {
-        ($(elem).text() === event.data[1]) ? $(elem).text(event.data[0]) : $(elem).text(event.data[1]);
-    });
+            ($(elem).html() === event.data[1]) ? 
+                   $(elem).html(event.data[0]) : $(elem).html(event.data[1]);
+        });
 
 }
 
