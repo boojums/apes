@@ -9,11 +9,8 @@
  ☐ new branch for hide users stuff
  ☐ error checking for storage (might be empty!)
  ✔ when is highlighting affected? does reading the rss do it?  nope @done (15-11-16 11:34)
- ☐ what about just using the pubdate compared to date/time of last visit?
- ☐ save and retrieval user id
+ ☐ save and retrieval user id (from options, used in background)
  ☐ generate discussion page url from user id
- 
-
 
 
 Future:
