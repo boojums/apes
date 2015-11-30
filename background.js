@@ -12,19 +12,42 @@ var discussionsurl = 'http://attackpoint.org/discussion-rss.jsp/refs-8.470/user_
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     var checkstring = 'attackpoint.org/log.jsp/user_' + String(checkloguser);
     if (tab.url.search(checkstring) > 0)  {
-        chrome.browserAction.setBadgeText({text: ''});
-        $.ajax({
-            url: discussionsurl,
-            cache: false,
-            crossDomain: true,
-            
-            success: function(data) {
-                var table = parseCommentXML(data);
-                chrome.storage.sync.set({'logMessages': table});     
+        updateCommentTable()
+    }
+
+    // Check if the page is for a discussion being followed
+    // If so, update storage and (maybe) clear badge
+    message_re = /attackpoint\.org\/discussionthread\.jsp\/message_(\d+)/
+    var match = message_re.exec(tab.url);
+    if (match != null) { 
+        message_id = match[1]
+        chrome.storage.sync.get(null, function(result) {
+            var oldtable = result.logMessages;
+            if (oldtable.hasOwnProperty(match[1])) {
+                updateCommentTable();
             }
         });
     }
 });
+
+// Ajax request that fetches comments from RSS feed and updates the 
+// comment table with the messageIDs and number of messages 
+function updateCommentTable() {
+
+    chrome.browserAction.setBadgeText({text: ''});    
+    
+    $.ajax({
+        url: discussionsurl,
+        cache: false,
+        crossDomain: true,
+        
+        success: function(data) {
+            var table = parseCommentXML(data);
+            chrome.storage.sync.set({'logMessages': table});     
+        }
+    });
+
+}
 
 // Start with a blank badge
 chrome.browserAction.setBadgeText({text: ''});
@@ -59,29 +82,32 @@ var parseCommentXML = function(xml) {
 };
 
 // TODO: take url as arg, either call checking function
-// Try using the rss feed to get discussion status instead of scraping the page
 // Might be possible to just get the top item and check that -- that should 
 // always change if there is a cahnge to any discussion
 (function worker() {
-    $.ajax({
-        url: 'http://attackpoint.org/discussion-rss.jsp/refs-8.470/user_470',
-        cache: false,
-        crossDomain: true,
-        
-        success: function(data) {
-            var table = parseCommentXML(data);
-            chrome.storage.sync.get(null, function(result) {
-                var oldtable = result.logMessages;                    
-                if (commentTableChanged(oldtable, table)) {
-                    chrome.browserAction.setBadgeText({text: 'c'});
-                } 
-            });
-        },
+    chrome.storage.sync.get("trackLog", function(result) {
+        var userid = result;
 
-        complete: function() {
-            // schedule next request for 1 minute from now
-            setTimeout(worker, 60000)
-        }
+        $.ajax({
+            url: 'http://attackpoint.org/discussion-rss.jsp/refs-8.470/user_470',
+            cache: false,
+            crossDomain: true,
+            
+            success: function(data) {
+                var table = parseCommentXML(data);
+                chrome.storage.sync.get(null, function(result) {
+                    var oldtable = result.logMessages;                    
+                    if (commentTableChanged(oldtable, table)) {
+                        chrome.browserAction.setBadgeText({text: 'c'});
+                    } 
+                });
+            },
+
+            complete: function() {
+                // schedule next request for 1 minute from now
+                setTimeout(worker, 60000)
+            }
+        });
     });
 })();
 
