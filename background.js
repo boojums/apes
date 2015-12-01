@@ -6,13 +6,17 @@
 
 // debugging
 var checkloguser = 470;
-var discussionsurl = 'http://attackpoint.org/discussion-rss.jsp/refs-8.470/user_470';
 
 // Listen for any changes to the URL of any tab.
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     var checkstring = 'attackpoint.org/log.jsp/user_' + String(checkloguser);
     if (tab.url.search(checkstring) > 0)  {
-        updateCommentTable()
+        chrome.storage.sync.get(null, function(result) {
+            if (result.hasOwnProperty(trackLog)) {
+                discussionsurl = base_url.replace(/xxxx/g, result.trackLog);
+                updateCommentTable(discussionsurl);
+            }
+        });
     }
 
     // Check if the page is for a discussion being followed
@@ -24,15 +28,22 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
         chrome.storage.sync.get(null, function(result) {
             var oldtable = result.logMessages;
             if (oldtable.hasOwnProperty(match[1])) {
-                updateCommentTable();
+                updateCommentTable(result.Tracklog);
             }
         });
     }
 });
 
+
+function getDiscussionURL(userid) {
+    var base_url = 'http://attackpoint.org/discussion-rss.jsp/refs-8.xxxx/user_xxxx';
+    url = base_url.replace(/xxxx/g, userid);
+    return url
+}
+
 // Ajax request that fetches comments from RSS feed and updates the 
 // comment table with the messageIDs and number of messages 
-function updateCommentTable() {
+function updateCommentTable(discussionsurl) {
 
     chrome.browserAction.setBadgeText({text: ''});    
     
@@ -86,7 +97,11 @@ var parseCommentXML = function(xml) {
 // always change if there is a cahnge to any discussion
 (function worker() {
     chrome.storage.sync.get("trackLog", function(result) {
-        var userid = result;
+        var userid = result.trackLog;
+        if (userid !== undefined) {
+
+        }
+
 
         $.ajax({
             url: 'http://attackpoint.org/discussion-rss.jsp/refs-8.470/user_470',

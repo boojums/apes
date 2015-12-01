@@ -1,9 +1,8 @@
 /* Storage object needs to hold:
-    - taggedUsers: {userid: text}
-    (- ignoreUsers: [userid])
-    - chickenUsers: [userid]
-TODO: separate this one out:
-    - pages: {url: info:(obj/crc)}
+    - taggedUsers: [{userid: text}]
+    - chickenUsers: [userids]
+    - logMessages: [{messagid: count}]
+    - trackLog: userid
 */
 
 // populate data for debugging
@@ -16,18 +15,12 @@ function populate() {
                         1012324: 12,
                         1011445: 2 
                       };
-    var pages = {"http://www.attackpoint.org/log.jsp/user_470":
-                    {   
-                        1012930: 5,
-                        1011447: 2,
-                        1012324: 12,
-                        1011445: 2 
-                    }
-                }
+
+    var trackLog = 470;
 
     var settings = {chickenUsers: chickenUsers,
                     taggedUsers: taggedUsers,
-                    pages: pages,
+                    trackLog: trackLog,
                     logMessages: logMessages}
     console.log("populating:");
     console.log(settings);
@@ -53,7 +46,7 @@ function insertUsername(user) {
         function(data) {
             // TODO: error checking
             $("#chicken-"+user).prev().text(data.username);
-            $("#tag-username-"+user).text(data.username);            
+            $("#tag-username-"+user).text(data.username);
         });
 }
 
@@ -114,16 +107,12 @@ function loadOptions() {
             insertUsername(usernum);
         }
 
+        trackLog = result.trackLog;
+        $('#tracked-log').text(insertUsername(470));
+
     });
 }
 
-function saveOptions() {
-
-}
-
-function eraseOptions() {
-
-}
 
 // Action to add a tagged user on click
 $("#add-tagged-user").click(function() {
@@ -189,7 +178,6 @@ $(document).on("click", ".remove-tagged", function(event) {
 });
 
 
-
 // Action to add a chicken user on click
 $("#add-chicken-user").click(function() {
     // TODO: validation of user
@@ -241,7 +229,6 @@ $(document).on("click", ".remove-chicken", function(event) {
 });
 
 document.addEventListener('DOMContentLoaded', loadOptions);
-document.getElementById('save').addEventListener('click', saveOptions);
 // Populate storage For debugging
 $("#populate").click(populate);
 
