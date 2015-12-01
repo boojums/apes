@@ -113,10 +113,12 @@ var parseCommentXML = function(xml) {
 
 
 /////////////////
-// Options page
+// Click toolbar icon
 /////////////////
 chrome.browserAction.onClicked.addListener(function(tab) {
-    chrome.runtime.openOptionsPage()
+    // TODO: go to discussions url
+    chrome.tabs.create({url: 'http://www.attackpoint.org/'})
+    //chrome.runtime.openOptionsPage()
 });
 
 //////////////////////////
