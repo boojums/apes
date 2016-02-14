@@ -141,16 +141,17 @@ $("#add-tagged-user").click(function() {
 });
 
 
-
+// TODO: Use save button instead
 // Action to save edited tag
 $(document).on("change", ".tag-field", function(event) {
     
     // Save edited tag
-    var usernum = $(event.target).attr('id').slice(7);
+    var usernum = $(event.target).attr('id').slice(4);
     chrome.storage.sync.get('taggedUsers', function(result) {
+        // TODO: hasownproperty
         var taggedUsers = result.taggedUsers;
         console.log(taggedUsers);
-        taggedUsers[usernum] = 'change me';
+        taggedUsers[usernum] = $(event.target).val();
         console.log(taggedUsers);
         chrome.storage.sync.set({'taggedUsers':taggedUsers});
 

@@ -15,27 +15,31 @@ function getDiscussionURL(userid) {
 
 // Listen for any changes to the URL of any tab.
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+
     var checkstring = 'attackpoint.org/log.jsp/user_' + String(checkloguser);
     if (tab.url.search(checkstring) > 0)  {
         chrome.storage.sync.get(null, function(result) {
             if (result.hasOwnProperty('trackLog')) {
+                chrome.browserAction.setBadgeText({text: ''});    
                 discussionsurl = getDiscussionURL(result.trackLog);
                 updateCommentTable(discussionsurl);
             }
         });
     }
 
+    // TODO: this is a mess! 
     // Check if the page is for a discussion being followed
-    // If so, update storage and (maybe) clear badge
+    // If so, update storage and clear badge
     message_re = /attackpoint\.org\/discussionthread\.jsp\/message_(\d+)/
     var match = message_re.exec(tab.url);
     if (match != null) { 
         message_id = match[1]
         chrome.storage.sync.get(null, function(result) {
-            if (result.hasOwnProperty(logMessages)) {
+            if (result.hasOwnProperty('logMessages')) {
                 var oldtable = result.logMessages;
             }
             if (oldtable.hasOwnProperty(match[1])) {
+                chrome.browserAction.setBadgeText({text: ''});    
                 updateCommentTable(result.Tracklog);
             }
         });
@@ -43,12 +47,10 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 });
 
 
+// TODO: just one function with worker?
 // Ajax request that fetches comments from RSS feed and updates the 
 // comment table with the messageIDs and number of messages 
-function updateCommentTable(discussionsurl) {
-
-    chrome.browserAction.setBadgeText({text: ''});    
-    
+function updateCommentTable(discussionsurl) {    
     $.ajax({
         url: discussionsurl,
         cache: false,
@@ -104,7 +106,6 @@ var parseCommentXML = function(xml) {
 
         }
 
-
         $.ajax({
             url: 'http://attackpoint.org/discussion-rss.jsp/refs-8.470/user_470',
             cache: false,
@@ -123,6 +124,7 @@ var parseCommentXML = function(xml) {
             complete: function() {
                 // schedule next request for 1 minute from now
                 setTimeout(worker, 60000)
+                //setTimeout(worker, 6000)
             }
         });
     });

@@ -5,21 +5,16 @@
 
 
 // Regex patterns for chickenifying discussion posts
-var word_regex = /\b\w+\b/g;
-
-var capWord_regex = /\b[A-Z]+\w*\b/g;
-var lowWord_regex = /\b[a-z]+\w*\b/g;
-var test_lo_regex = /\b[a-z]+\w*\b(?![^<]*>)/g;
-var test_hi_regex = /\b[A-Z]+\w*\b(?![^<]*>)/g;
+var loword_regex = /\b[a-z]+\w*\b(?![^<]*>)/g;
+var capsword_regex = /\b[A-Z]+\w*\b(?![^<]*>)/g;
 
 var user_regex = /user_([0-9]*)/;
 
 // Converts text of element to 'chickens'. Caps retained, numbers and punctuation retained.
-// TODO: save everything inside, not just text... need spacing, images, links, etc.
 function chickenify(elem) {
     old_text = $(elem).html()
-    $(elem).html($(elem).html().replace(test_lo_regex, "chicken"));
-    $(elem).html($(elem).html().replace(test_hi_regex, "Chicken"));
+    $(elem).html($(elem).html().replace(loword_regex, "chicken"));
+    $(elem).html($(elem).html().replace(capsword_regex, "Chicken"));
     new_text = $(elem).html()
 
     // Click text to toggle between original and chickenified
@@ -44,22 +39,6 @@ function show_tag(elem, tag) {
     $(elem).append(newcontent)
 }
 
-// Chickenify covers the idea of hiding -- hiding itself is too harsh, I think
-// Not implimented in version 1!
-// TODO: just hide the text, not their entire existance?
-function hide_post(elem) {
-
-    //$(elem).next().toggle()
-    
-    // if (post.style.display == 'none') {
-    //     post.style.display = 'inherit';
-    // } else {
-    //     //note: use following to leave gap where msg was
-    //     //msgs[i].style.visibility = 'hidden' 
-    //     post.style.display = 'none';
-    // }
-}
-
 
 (function() {
     // Only run if we are on a page with discussion messages
@@ -70,7 +49,6 @@ function hide_post(elem) {
             settings = result;
         
             tagged_users = settings.taggedUsers;
-            //hide_users = settings.hideUsers;
             chicken_users = settings.chickenUsers;
 
             // TODO: should only be within id messages
@@ -80,11 +58,6 @@ function hide_post(elem) {
                 if(user_str) {
                     user = user_str[1];
                 }
-                
-                // Keep out of v1
-                //if (hide_users.indexOf(user) != -1) {
-                //    hide_post(this);
-                //}
 
                 if (chicken_users.indexOf(user) != -1) {
                     chickenify($(this).next());

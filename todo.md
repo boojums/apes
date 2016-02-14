@@ -1,4 +1,8 @@
  Cleaning up:
+
+ ☐ auto paste of DOMA maps?
+ ☐ initial use should clear out settings if they don't match
+ ☐ function to seed settings
  ☐ use jquery for basic DOM manipulation (like toggleClass for hide/show?)
  ☐ don't show the badge if it's your own comment!
  ✔ use ajax for update @done (15-03-28 22:43)
@@ -6,7 +10,8 @@
  ✔ pick one method for changed page function @done (15-03-28 22:44)
    ✔ start with just user log comments @done (15-03-28 22:43)
  ✔ figure out storage method for options @done (15-03-28 22:44)
- ☐ basic option page
+ ☐ basic option page 
+ option page on click
  ☐ new branch for hide users stuff
  ☐ error checking for storage (might be empty!)
  ✔ when is highlighting affected? does reading the rss do it?  nope @done (15-11-16 11:34)
