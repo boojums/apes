@@ -38,6 +38,7 @@
     },
 
     "permissions": [
+        "clipboardRead",
         "storage",
         "tabs",
         "http://*.attackpoint.org/",

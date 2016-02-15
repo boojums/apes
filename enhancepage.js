@@ -71,3 +71,23 @@ function show_tag(elem, tag) {
         });
     }
 })();
+
+
+// Convert a link to a DOMA map to a thumbnail image that links to that map page.
+$('textarea').bind('paste', function(e) {
+    console.log('paste event');
+    var link = e.originalEvent.clipboardData.getData('text');
+    var element = this;
+    setTimeout(function () {
+        var doma_re = /(http[s]?:\/\/[\S]+\/doma\/)show_map\.php\?user=[\w]+&map=([0-9]+)/;
+        var match = doma_re.exec(link);
+        if (match != null) {
+            var url = match[1];
+            var mapnum = match[2];
+            var img_url = url + 'map_images/' + mapnum;
+            var img_block = '<a href='+link+'><img src='+img_url+'.thumbnail.jpg></a>';
+            var content = $(element).val();
+            $(element).val(content.replace(link, img_block))
+        }
+     }, 100);
+})
