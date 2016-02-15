@@ -73,9 +73,33 @@ function show_tag(elem, tag) {
 })();
 
 
+// Not used but perhaps this is a better way?
+// Borrowed from: 
+// https://gist.github.com/srsudar/e9a41228f06f32f272a2
+function insertTextAtCursor(text) {
+    var el = document.activeElement;
+    var val = el.value;
+    var endIndex;
+    var range;
+    var doc = el.ownerDocument;
+    if (typeof el.selectionStart === 'number' &&
+        typeof el.selectionEnd === 'number') {
+        endIndex = el.selectionEnd;
+        el.value = val.slice(0, endIndex) + text + val.slice(endIndex);
+        el.selectionStart = el.selectionEnd = endIndex + text.length;
+    } else if (doc.selection !== 'undefined' && doc.selection.createRange) {
+        el.focus();
+        range = doc.selection.createRange();
+        range.collapse(false);
+        range.text = text;
+        range.select();
+    }
+}
+
+
 // Convert a link to a DOMA map to a thumbnail image that links to that map page.
+//var handlePaste = function(e) {
 $('textarea').bind('paste', function(e) {
-    console.log('paste event');
     var link = e.originalEvent.clipboardData.getData('text');
     var element = this;
     setTimeout(function () {
@@ -86,8 +110,9 @@ $('textarea').bind('paste', function(e) {
             var mapnum = match[2];
             var img_url = url + 'map_images/' + mapnum;
             var img_block = '<a href='+link+'><img src='+img_url+'.thumbnail.jpg></a>';
+            //insertTextAtCursor(img_block);
             var content = $(element).val();
-            $(element).val(content.replace(link, img_block))
+            $(element).val(content.replace(link, img_block));
         }
      }, 100);
-})
+});
