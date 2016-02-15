@@ -73,7 +73,6 @@ function show_tag(elem, tag) {
 })();
 
 
-// Not used but perhaps this is a better way?
 // Borrowed from: 
 // https://gist.github.com/srsudar/e9a41228f06f32f272a2
 function insertTextAtCursor(text) {
@@ -100,19 +99,18 @@ function insertTextAtCursor(text) {
 // Convert a link to a DOMA map to a thumbnail image that links to that map page.
 //var handlePaste = function(e) {
 $('textarea').bind('paste', function(e) {
-    var link = e.originalEvent.clipboardData.getData('text');
+    e.preventDefault();
+    var pasted = e.originalEvent.clipboardData.getData('text');
     var element = this;
-    setTimeout(function () {
-        var doma_re = /(http[s]?:\/\/[\S]+\/doma\/)show_map\.php\?user=[\w]+&map=([0-9]+)/;
-        var match = doma_re.exec(link);
-        if (match != null) {
-            var url = match[1];
-            var mapnum = match[2];
-            var img_url = url + 'map_images/' + mapnum;
-            var img_block = '<a href='+link+'><img src='+img_url+'.thumbnail.jpg></a>';
-            //insertTextAtCursor(img_block);
-            var content = $(element).val();
-            $(element).val(content.replace(link, img_block));
-        }
-     }, 100);
+    var doma_re = /(http[s]?:\/\/[\S]+\/doma\/)show_map\.php\?user=[\w]+&map=([0-9]+)/;
+    var match = doma_re.exec(pasted);
+    if (match != null) {
+        var url = match[1];
+        var mapnum = match[2];
+        var img_url = url + 'map_images/' + mapnum;
+        var img_block = '<a href='+pasted+'><img src='+img_url+'.thumbnail.jpg></a>';
+        insertTextAtCursor(img_block);
+    } else {
+        insertTextAtCursor(pasted);
+    }
 });
