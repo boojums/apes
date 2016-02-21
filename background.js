@@ -3,6 +3,7 @@
 // Keep the userid in 'state' since it is unlikely to change much
 var checkloguser;
 
+// Fetch checkloguser value right away
 (function getCheckloguser() {
     chrome.storage.sync.get(null, function(result) {
         if (result.hasOwnProperty('checkloguser')) {
@@ -16,6 +17,7 @@ var checkloguser;
 // update the badge. All badge updating should come from 
 // sync storage. No direct badge changes, as those would only affect
 // the browser in use.
+// Also update checkedloguser if it changes.
 chrome.storage.onChanged.addListener(function (changes, areaName) {
     if (changes.hasOwnProperty('badge')) {
         chrome.browserAction.setBadgeText({text: changes.badge.newValue});
@@ -39,7 +41,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (tab.url.search(checkstring) > 0)  {
         chrome.storage.sync.get(null, function(result) {
             if (result.hasOwnProperty('trackLog')) {
-                chrome.browserAction.setBadgeText({text: ''});    
+                chrome.storage.sync.set({'badge': ''});                
                 discussionsurl = getDiscussionURL(result.trackLog);
                 updateCommentTable(discussionsurl);
             }
