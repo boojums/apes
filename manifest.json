@@ -27,6 +27,12 @@
 
     ],
     
+    "icons": { 
+        "16": "running16.png",
+        "48": "running48.png",
+        "128": "running128.png"
+    },
+    
     //"page_action": {
         //"default_icon": "icon.png", //optional
     //    "default_title": "Enhance AP" //optional

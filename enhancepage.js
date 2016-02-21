@@ -10,7 +10,8 @@ var capsword_regex = /\b[A-Z]+\w*\b(?![^<]*>)/g;
 
 var user_regex = /user_([0-9]*)/;
 
-// Converts text of element to 'chickens'. Caps retained, numbers and punctuation retained.
+// Converts text of an element to 'chickens'. 
+// Caps retained, numbers and punctuation retained.
 function chickenify(elem) {
     old_text = $(elem).html()
     $(elem).html($(elem).html().replace(loword_regex, "chicken"));
@@ -42,34 +43,34 @@ function show_tag(elem, tag) {
 
 (function() {
     // Only run if we are on a page with discussion messages
-    if (document.getElementById('messages')) {
-
-        // load everything from syncStorage
-        chrome.storage.sync.get(null, function(result) {
-            settings = result;
-        
-            tagged_users = settings.taggedUsers;
-            chicken_users = settings.chickenUsers;
-
-            // TODO: should only be within id messages
-            // (try next + selector)
-            $('.discussion_post_name').each(function(index) {
-                var user_str = user_regex.exec($(this).html());
-                if(user_str) {
-                    user = user_str[1];
-                }
-
-                if (chicken_users.indexOf(user) != -1) {
-                    chickenify($(this).next());
-                }
-
-                if (user in tagged_users) {
-                    tag = tagged_users[user];
-                    show_tag(this, tag);
-                }
-            });
-        });
+    if (!document.getElementById('messages')) {
+        return;
     }
+    // load everything from syncStorage
+    chrome.storage.sync.get(null, function(result) {
+        var settings = result;
+    
+        var tagged_users = settings.taggedUsers;
+        var chicken_users = settings.chickenUsers;
+
+        // TODO: should only be within id messages
+        // (try next + selector)
+        $('.discussion_post_name').each(function(index) {
+            var user_str = user_regex.exec($(this).html());
+            if(user_str) {
+                var user = user_str[1];
+            }
+
+            if (chicken_users.indexOf(user) != -1) {
+                chickenify($(this).next());
+            }
+
+            if (user in tagged_users) {
+                var tag = tagged_users[user];
+                show_tag(this, tag);
+            }
+        });
+    });
 })();
 
 

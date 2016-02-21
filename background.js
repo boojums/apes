@@ -1,8 +1,14 @@
 // Copyright (c) 2014 Cristina Luis
 
-
-// TODO: add listener (to background?) for changes to storage once tagging implemented in-place
-// chrome.storage.onChanged.addListener(function(changes, namespace) {
+// Any time the badge status changes from any sync'd browser,
+// update the badge. All badge updating should come from 
+// sync storage. No direct badge changes, as those would only affect
+// the browser in use.
+chrome.storage.onChanged.addListener(function (changes, areaName) {
+    if (changes.hasOwnProperty('badge')) {
+        chrome.browserAction.setBadgeText({text: changes.badge.newValue});
+    }
+});
 
 // debugging
 var checkloguser = 470;
@@ -15,7 +21,6 @@ function getDiscussionURL(userid) {
 
 // Listen for any changes to the URL of any tab.
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-
     var checkstring = 'attackpoint.org/log.jsp/user_' + String(checkloguser);
     if (tab.url.search(checkstring) > 0)  {
         chrome.storage.sync.get(null, function(result) {
@@ -39,7 +44,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
                 var oldtable = result.logMessages;
             }
             if (oldtable.hasOwnProperty(match[1])) {
-                chrome.browserAction.setBadgeText({text: ''});    
+                chrome.storage.sync.set({'badge': ''});                
                 updateCommentTable(result.Tracklog);
             }
         });
@@ -63,9 +68,6 @@ function updateCommentTable(discussionsurl) {
     });
 
 }
-
-// Start with a blank badge
-chrome.browserAction.setBadgeText({text: ''});
 
 // Compare two comment tables from a log to check if they 
 // are the same. 
@@ -98,7 +100,7 @@ var parseCommentXML = function(xml) {
 
 // TODO: take url as arg, either call checking function
 // Might be possible to just get the top item and check that -- that should 
-// always change if there is a cahnge to any discussion
+// always change if there is a change to any discussion
 (function worker() {
     chrome.storage.sync.get("trackLog", function(result) {
         var userid = result.trackLog;
@@ -116,7 +118,7 @@ var parseCommentXML = function(xml) {
                 chrome.storage.sync.get(null, function(result) {
                     var oldtable = result.logMessages;                    
                     if (commentTableChanged(oldtable, table)) {
-                        chrome.browserAction.setBadgeText({text: 'c'});
+                        chrome.storage.sync.set({'badge': 'c'});                    
                     } 
                 });
             },
@@ -135,10 +137,11 @@ var parseCommentXML = function(xml) {
 // Click toolbar icon
 /////////////////
 chrome.browserAction.onClicked.addListener(function(tab) {
-    // TODO: go to discussions url
-    chrome.tabs.create({url: 'http://www.attackpoint.org/'})
-    //chrome.runtime.openOptionsPage()
+    // TODO: go to discussions url? open options?
+    //chrome.tabs.create({url: 'http://www.attackpoint.org/'})
+    chrome.runtime.openOptionsPage()
 });
+
 
 //////////////////////////
 // Open all unreads
