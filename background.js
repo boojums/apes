@@ -6,9 +6,8 @@ var checkloguser;
 // Fetch checkloguser value right away
 (function getCheckloguser() {
     chrome.storage.sync.get(null, function(result) {
-        if (result.hasOwnProperty('checkloguser')) {
-            checkloguser = result.checkloguser; 
-            console.log(checkloguser);       
+        if (result.hasOwnProperty('trackLog')) {
+            checkloguser = result.trackLog; 
         }
     });
 })();
@@ -22,7 +21,7 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
     if (changes.hasOwnProperty('badge')) {
         chrome.browserAction.setBadgeText({text: changes.badge.newValue});
     }
-    if (changes.hasOwnProperty('checkloguser')) {
+    if (changes.hasOwnProperty('trackLog')) {
         checkloguser = changes.checkloguser;
     }
 });
