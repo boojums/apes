@@ -36,7 +36,7 @@ function show_tag(elem, tag) {
     newcontent.className = 'tag';
     newcontent.style.color = "#aaaaaa";
     newcontent.style.fontSize = "11px";
-    newcontent.innerHTML = tagged_users[user];
+    newcontent.innerHTML = tag;
     $(elem).append(newcontent)
 }
 
@@ -49,13 +49,13 @@ function show_tag(elem, tag) {
     // load everything from syncStorage
     chrome.storage.sync.get(null, function(result) {
         var settings = result;
-    
         var tagged_users = settings.taggedUsers;
         var chicken_users = settings.chickenUsers;
 
         // TODO: should only be within id messages
         // (try next + selector)
         $('.discussion_post_name').each(function(index) {
+            console.log(tagged_users);
             var user_str = user_regex.exec($(this).html());
             if(user_str) {
                 var user = user_str[1];
