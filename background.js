@@ -1,5 +1,17 @@
 // Copyright (c) 2014 Cristina Luis
 
+// Keep the userid in 'state' since it is unlikely to change much
+var checkloguser;
+
+(function getCheckloguser() {
+    chrome.storage.sync.get(null, function(result) {
+        if (result.hasOwnProperty('checkloguser')) {
+            checkloguser = result.checkloguser; 
+            console.log(checkloguser);       
+        }
+    });
+})();
+
 // Any time the badge status changes from any sync'd browser,
 // update the badge. All badge updating should come from 
 // sync storage. No direct badge changes, as those would only affect
@@ -8,11 +20,12 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
     if (changes.hasOwnProperty('badge')) {
         chrome.browserAction.setBadgeText({text: changes.badge.newValue});
     }
+    if (changes.hasOwnProperty('checkloguser')) {
+        checkloguser = changes.checkloguser;
+    }
 });
 
-// debugging
-var checkloguser = 470;
-
+// Return the url for the RSS feed of a given user
 function getDiscussionURL(userid) {
     var base_url = 'http://attackpoint.org/discussion-rss.jsp/refs-8.xxxx/user_xxxx';
     url = base_url.replace(/xxxx/g, userid);
@@ -22,6 +35,7 @@ function getDiscussionURL(userid) {
 // Listen for any changes to the URL of any tab.
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     var checkstring = 'attackpoint.org/log.jsp/user_' + String(checkloguser);
+    
     if (tab.url.search(checkstring) > 0)  {
         chrome.storage.sync.get(null, function(result) {
             if (result.hasOwnProperty('trackLog')) {
@@ -126,6 +140,8 @@ var parseCommentXML = function(xml) {
             complete: function() {
                 // schedule next request for 1 minute from now
                 setTimeout(worker, 60000)
+                console.log(checkloguser);           
+
                 //setTimeout(worker, 6000)
             }
         });
