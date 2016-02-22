@@ -1,6 +1,8 @@
 /*
     Injected into all AP pages and modifies discussion sections based
-    on users that have been tagged, marked for hiding, or chickenified.
+    on users that have been tagged or chickenified.
+
+    Also handles magic DOMA link pasting.
 */
 
 
@@ -97,7 +99,6 @@ function insertTextAtCursor(text) {
 
 
 // Convert a link to a DOMA map to a thumbnail image that links to that map page.
-//var handlePaste = function(e) {
 $('textarea').bind('paste', function(e) {
     e.preventDefault();
     var pasted = e.originalEvent.clipboardData.getData('text');

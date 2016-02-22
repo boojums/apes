@@ -28,9 +28,9 @@
     ],
     
     "icons": { 
-        "16": "running16.png",
-        "48": "running48.png",
-        "128": "running128.png"
+        "16": "icons/running16.png",
+        "48": "icons/running48.png",
+        "128": "icons/running128.png"
     },
     
     //"page_action": {
