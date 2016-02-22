@@ -55,7 +55,6 @@ function show_tag(elem, tag) {
         // TODO: should only be within id messages
         // (try next + selector)
         $('.discussion_post_name').each(function(index) {
-            console.log(tagged_users);
             var user_str = user_regex.exec($(this).html());
             if(user_str) {
                 var user = user_str[1];
