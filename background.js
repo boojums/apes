@@ -22,7 +22,7 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
         chrome.browserAction.setBadgeText({text: changes.badge.newValue});
     }
     if (changes.hasOwnProperty('trackLog')) {
-        checkloguser = changes.checkloguser;
+        checkloguser = changes.trackLog;
     }
 });
 
@@ -117,35 +117,26 @@ var parseCommentXML = function(xml) {
 // Might be possible to just get the top item and check that -- that should 
 // always change if there is a change to any discussion
 (function worker() {
-    chrome.storage.sync.get("trackLog", function(result) {
-        var userid = result.trackLog;
-        if (userid !== undefined) {
-
+    log_url = 'http://attackpoint.org/discussion-rss.jsp/refs-8.' + checkloguser + '/user' + checkloguser,
+    $.ajax({
+        // TODO: catch error gracefully?
+        url: log_url,
+        cache: false,
+        crossDomain: true, 
+        success: function(data) {
+            var table = parseCommentXML(data);
+            chrome.storage.sync.get(null, function(result) {
+                var oldtable = result.logMessages;                    
+                if (commentTableChanged(oldtable, table)) {
+                    chrome.storage.sync.set({'badge': 'c'});                    
+                } 
+            });
+        },
+        complete: function() {
+            // schedule next request for 1 minute from now
+            setTimeout(worker, 60000)
+            console.log(checkloguser);           
         }
-
-        $.ajax({
-            url: 'http://attackpoint.org/discussion-rss.jsp/refs-8.470/user_470',
-            cache: false,
-            crossDomain: true,
-            
-            success: function(data) {
-                var table = parseCommentXML(data);
-                chrome.storage.sync.get(null, function(result) {
-                    var oldtable = result.logMessages;                    
-                    if (commentTableChanged(oldtable, table)) {
-                        chrome.storage.sync.set({'badge': 'c'});                    
-                    } 
-                });
-            },
-
-            complete: function() {
-                // schedule next request for 1 minute from now
-                setTimeout(worker, 60000)
-                console.log(checkloguser);           
-
-                //setTimeout(worker, 6000)
-            }
-        });
     });
 })();
 
