@@ -1,5 +1,6 @@
  Cleaning up:
-
+ use font awesome to tag and chickenify on the page
+ ☐ switch to alarms.api instead of setTimeout and make event page (background not persistant)
  ✔ icon @done (16-02-15 16:57)
  ☐ use jquery for basic DOM manipulation 
  ✔ don't show the badge if it's your own comment! @done (16-02-15 17:03)

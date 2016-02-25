@@ -12,8 +12,9 @@ var capsword_regex = /\b[A-Z]+\w*\b(?![^<]*>)/g;
 
 var user_regex = /user_([0-9]*)/;
 
+
 // Converts text of an element to 'chickens'. 
-// Caps retained, numbers and punctuation retained.
+// Caps retained, numbers and punctuation retained, for awesomeness.
 function chickenify(elem) {
     old_text = $(elem).html()
     $(elem).html($(elem).html().replace(loword_regex, "chicken"));
@@ -28,9 +29,9 @@ function chickenify(elem) {
 
 }
 
+
 // Add tag under username in discussion posts
 function show_tag(elem, tag) {
-    // Don't do anything if it already has a tag
     if ($(elem).hasClass('#tag')) {
         return;
     }
@@ -43,12 +44,12 @@ function show_tag(elem, tag) {
 }
 
 
+// Run when page loads to find all users who needs tags or whose
+// text should be chickenified.
 (function() {
-    // Only run if we are on a page with discussion messages
     if (!document.getElementById('messages')) {
         return;
     }
-    // load everything from syncStorage
     chrome.storage.sync.get(null, function(result) {
         var settings = result;
         var tagged_users = settings.taggedUsers;
@@ -58,9 +59,9 @@ function show_tag(elem, tag) {
         // (try next + selector)
         $('.discussion_post_name').each(function(index) {
             var user_str = user_regex.exec($(this).html());
-            if(user_str) {
+            if (user_str) {
                 var user = user_str[1];
-            }
+            } // TODO: um, else don't do stuff...?
 
             if (chicken_users.indexOf(user) != -1) {
                 chickenify($(this).next());

@@ -109,6 +109,8 @@ var parseCommentXML = function(xml) {
     return data;
 };
 
+
+// TODO: switch to chrome.alarms API and make background page an event page 
 // TODO: take url as arg, either call checking function
 // Might be possible to just get the top item and check that -- that should 
 // always change if there is a change to any discussion
