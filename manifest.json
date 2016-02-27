@@ -4,7 +4,7 @@
     "manifest_version": 2,    
     
     "description": "Enhance your AP experience.",
-    "default_locale": "en",
+    //"default_locale": "en",
 
     "icons": { 
         "16": "icons/running16.png",
@@ -16,7 +16,7 @@
         "default_title": "Attackpoint Enhancement Suite"
     },
 
-    "author": {"Cristina Luis"},
+    "author": "Cristina Luis",
 
     "background": {
         "scripts": ["jquery-1.11.1.min.js", 
@@ -28,7 +28,8 @@
     "content_scripts": [
         {
             "matches": ["http://*.attackpoint.org/*"],
-            "js": ["jquery-1.11.1.min.js", "enhancepage.js"]
+            "js": ["jquery-1.11.1.min.js", "enhancepage.js"],
+            "css": ["css/font-awesome.css"]
         },
         
         {
@@ -45,6 +46,10 @@
         "tabs",
         "http://*.attackpoint.org/",
         "http://attackpoint.org/"
+    ],
+
+    "web_accessible_resources": [
+        "fonts/*"
     ],
 
     // Deprecated from Chrome 40 

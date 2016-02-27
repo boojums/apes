@@ -43,6 +43,13 @@ function show_tag(elem, tag) {
     $(elem).append(newcontent)
 }
 
+// TODO: make it clickable to add a tag
+function add_tag_icon(elem) {
+    var newcontent = document.createElement("span");
+    newcontent.className = "fa fa-tag";
+    newcontent.style.color = "#aaaaaa";
+    $(elem).prepend(newcontent);
+}
 
 // Run when page loads to find all users who needs tags or whose
 // text should be chickenified.
@@ -59,6 +66,9 @@ function show_tag(elem, tag) {
         // (try next + selector)
         $('.discussion_post_name').each(function(index) {
             var user_str = user_regex.exec($(this).html());
+            // TODO: no icon on your own reply box
+            add_tag_icon(this);
+
             if (user_str) {
                 var user = user_str[1];
             } // TODO: um, else don't do stuff...?
