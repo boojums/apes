@@ -32,7 +32,7 @@ function chickenify(elem) {
 
 // Add tag under username in discussion posts
 function show_tag(elem, tag) {
-    if ($(elem).hasClass('#tag')) {
+    if ($(elem).hasClass('tag')) {
         return;
     }
     var newcontent = document.createElement("div");
@@ -43,12 +43,33 @@ function show_tag(elem, tag) {
     $(elem).append(newcontent)
 }
 
-// TODO: make it clickable to add a tag
-function add_tag_icon(elem) {
-    var newcontent = document.createElement("span");
-    newcontent.className = "fa fa-tag";
-    newcontent.style.color = "#aaaaaa";
-    $(elem).prepend(newcontent);
+// TODO: make it clickable to add a tag and/or chickenify
+function add_tag_icon(elem, user) {
+    $("<span>").attr("class", "fa fa-tag")
+               .css("color", "#aaaaaa")
+               .prependTo(elem);
+
+    var tagid = "tag-" + user;
+    $("<div>").attr("id", tagid)
+             .text("blah blah blah")
+             .appendTo(elem);
+
+    tagid = "#" + tagid;
+    $(tagid).dialog({
+        autoOpen: false,
+        buttons: {
+            OK: function() {$(this).dialog("close");}
+        },
+        title: "Tag User " + user,
+        position: {
+            my: "left center",
+            at: "left center"
+        }
+    });
+
+    $(".fa-tag").click(function() {
+        $(tagid).dialog("open");
+    });
 }
 
 // Run when page loads to find all users who needs tags or whose
@@ -66,8 +87,11 @@ function add_tag_icon(elem) {
         // (try next + selector)
         $('.discussion_post_name').each(function(index) {
             var user_str = user_regex.exec($(this).html());
-            // TODO: no icon on your own reply box
-            add_tag_icon(this);
+            if (user_str == null) {
+                return;
+            }
+
+            add_tag_icon(this, user_str[1]);
 
             if (user_str) {
                 var user = user_str[1];
