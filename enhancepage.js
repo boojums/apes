@@ -44,33 +44,20 @@ function show_tag(elem, tag) {
 }
 
 // TODO: make it clickable to add a tag and/or chickenify
+// TODO: try css/html5 modal dialog boxes instead
 function add_tag_icon(elem, user) {
-    $("<span>").attr("class", "fa fa-tag")
+    var tagid = "tag-" + user;
+    var tag = $("<span>").attr("class", "fa fa-tag")
+               .attr("id", tagid)
                .css("color", "#aaaaaa")
                .prependTo(elem);
 
-    var tagid = "tag-" + user;
-    $("<div>").attr("id", tagid)
-             .text("blah blah blah")
-             .appendTo(elem);
-
-    tagid = "#" + tagid;
-    $(tagid).dialog({
-        autoOpen: false,
-        buttons: {
-            OK: function() {$(this).dialog("close");}
-        },
-        title: "Tag User " + user,
-        position: {
-            my: "left center",
-            at: "left center"
-        }
-    });
-
-    $(".fa-tag").click(function() {
-        $(tagid).dialog("open");
+    tag.click(function() {
+        $("#tagger").dialog("open");   
+        return false;   
     });
 }
+
 
 // Run when page loads to find all users who needs tags or whose
 // text should be chickenified.
@@ -106,6 +93,20 @@ function add_tag_icon(elem, user) {
                 show_tag(this, tag);
             }
         });
+        $("body").append('<div id=tagger>blah blah blah</div>');
+        
+        $("#tagger").dialog({
+            autoOpen: false,
+            buttons: {
+                OK: function() {$(this).dialog("close");}
+            },
+            title: "Tag User ",
+            position: {
+                my: "left center",
+                at: "left center"
+            }
+        });
+
     });
 })();
 
