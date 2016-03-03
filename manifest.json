@@ -29,7 +29,7 @@
         {
             "matches": ["http://*.attackpoint.org/*"],
             "js": ["jquery-1.11.1.min.js", "jquery-ui.min.js", "enhancepage.js"],
-            "css": ["css/font-awesome.css"]
+            "css": ["css/font-awesome.css", "css/jquery-ui.css"]
         },
         
         {
@@ -49,7 +49,8 @@
     ],
 
     "web_accessible_resources": [
-        "fonts/*"
+        "fonts/*",
+        "images/*"
     ],
 
     // Deprecated from Chrome 40 
