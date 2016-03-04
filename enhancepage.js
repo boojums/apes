@@ -127,8 +127,8 @@ function add_tag_icon(elem, user) {
 function save_tag(user) {
     console.log(user);
     console.log($('#tag-user-field').val());
-    
-    if ($('#chickenify').checked == true) {
+    console.log($('#chickenify').prop('checked'));
+    if ($('#chickenify').prop('checked')) {
         console.log('chicken true');
         chrome.storage.sync.get('chickenUsers', function(result) {
             chickenUsers = result.chickenUsers;
