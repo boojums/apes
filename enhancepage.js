@@ -43,6 +43,14 @@ function show_tag(elem, tag) {
     $(elem).append(newcontent)
 }
 
+// TODO: load current tag and chicken status
+function dialog_content(user) {
+    var content = "Tag: <input id='tag-user-field' type=text size=12></input>";
+    content += "<br />Chickenify<input id='chickenify' type=checkbox></input>";
+    return content;
+}
+
+
 // TODO: make it clickable to add a tag and/or chickenify
 // TODO: try css/html5 modal dialog boxes instead
 function add_tag_icon(elem, user) {
@@ -53,7 +61,25 @@ function add_tag_icon(elem, user) {
                .prependTo(elem);
 
     tag.click(function() {
-        $("#tagger").dialog("open");   
+        $('<div />').html("Tag me").dialog({
+            modal: true,
+            title: "Tag User " + user,
+            open: function() {
+                $(this).html(dialog_content(user));
+            },
+            buttons: {
+                Save: function(event) {
+                    save_tag(user);
+                    $('#tag-user-field').val('');
+                    $('#chickenify').val('');
+                    $(this).dialog("close");
+                }
+            },
+            position: {
+                my: "left center",
+                at: "left center"
+            }
+        });
         return false;   
     });
 }
@@ -93,23 +119,45 @@ function add_tag_icon(elem, user) {
                 show_tag(this, tag);
             }
         });
-        $("body").append('<div id=tagger>blah blah blah</div>');
-        
-        $("#tagger").dialog({
-            autoOpen: false,
-            buttons: {
-                OK: function() {$(this).dialog("close");}
-            },
-            title: "Tag User ",
-            position: {
-                my: "left center",
-                at: "left center"
-            }
-        });
-
     });
 })();
 
+
+// TODO: save tag text
+function save_tag(user) {
+    console.log(user);
+    console.log($('#tag-user-field').val());
+    
+    if ($('#chickenify').checked == true) {
+        console.log('chicken true');
+        chrome.storage.sync.get('chickenUsers', function(result) {
+            chickenUsers = result.chickenUsers;
+            chickenUsers.push(user);
+            chrome.storage.sync.set({'chickenUsers':chickenUsers});
+        });
+    } else {
+        chrome.storage.sync.get('chickenUsers', function(result) {
+            chickenUsers = result.chickenUsers;
+            console.log(chickenUsers);
+            var index = chickenUsers.indexOf(user);
+            console.log(index);
+            if (index > -1) {
+                chickenUsers.splice(index, 1);
+                chrome.storage.sync.set({'chickenUsers':chickenUsers});
+            }            
+        })
+    }
+}
+
+
+// TODO?: Action to add tag 
+$(document).on("click", "#tag-user-field", function(event) {
+});
+
+
+// TODO?: Action to chickenify a user
+$(document).on("click", "#chickenify", function(event) {
+});
 
 // Borrowed from: 
 // https://gist.github.com/srsudar/e9a41228f06f32f272a2

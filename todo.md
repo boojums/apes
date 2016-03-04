@@ -1,5 +1,5 @@
  Cleaning up:
- use font awesome to tag and chickenify on the page
+ ✔ use font awesome to tag and chickenify on the page @done (16-03-04 20:40)
  ☐ switch to alarms.api instead of setTimeout and make event page (background not persistant)
  ✔ icon @done (16-02-15 16:57)
  ☐ use jquery for basic DOM manipulation 
