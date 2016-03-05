@@ -45,11 +45,27 @@ function show_tag(elem, tag) {
 
 // TODO: load current tag and chicken status
 function dialog_content(user) {
-    var content = "Tag: <input id='tag-user-field' type=text size=12></input>";
-    content += "<br />Chickenify<input id='chickenify' type=checkbox></input>";
-    return content;
+        var content = "Tag: <input id='tag-user-field' type=text size=12></input>";
+        content += "<br />Chickenify<input id='chickenify' type=checkbox></input>";
+        return content;
 }
 
+
+function update_dialog(user) {
+    chrome.storage.sync.get(null, function(result) {
+        if (result.hasOwnProperty("chickenUsers")) {
+            chickenUsers = result.chickenUsers;
+            if (chickenUsers.indexOf(user) != -1) {
+                $('#chickenify').prop("checked", true);        }
+        }
+        if (result.hasOwnProperty("taggedUsers")) {
+            if (user in result.taggedUsers) {
+                tag = result.taggedUsers[user];
+                $('#tag-user-field').val(tag);
+            }
+        }
+    });
+}
 
 // TODO: make it clickable to add a tag and/or chickenify
 // TODO: try css/html5 modal dialog boxes instead
@@ -71,7 +87,7 @@ function add_tag_icon(elem, user) {
                 Save: function(event) {
                     save_tag(user);
                     $('#tag-user-field').val('');
-                    $('#chickenify').val('');
+                    $('#chickenify').prop("checked", false);
                     $(this).dialog("close");
                 }
             },
@@ -80,6 +96,7 @@ function add_tag_icon(elem, user) {
                 at: "left center"
             }
         });
+        update_dialog(user);
         return false;   
     });
 }
@@ -129,7 +146,6 @@ function save_tag(user) {
     console.log($('#tag-user-field').val());
     console.log($('#chickenify').prop('checked'));
     if ($('#chickenify').prop('checked')) {
-        console.log('chicken true');
         chrome.storage.sync.get('chickenUsers', function(result) {
             chickenUsers = result.chickenUsers;
             chickenUsers.push(user);
@@ -138,9 +154,7 @@ function save_tag(user) {
     } else {
         chrome.storage.sync.get('chickenUsers', function(result) {
             chickenUsers = result.chickenUsers;
-            console.log(chickenUsers);
             var index = chickenUsers.indexOf(user);
-            console.log(index);
             if (index > -1) {
                 chickenUsers.splice(index, 1);
                 chrome.storage.sync.set({'chickenUsers':chickenUsers});
