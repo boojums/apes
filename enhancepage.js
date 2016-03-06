@@ -43,7 +43,7 @@ function show_tag(elem, tag) {
     $(elem).append(newcontent)
 }
 
-// TODO: load current tag and chicken status
+// Basic template for tag dialog
 function dialog_content(user) {
         var content = "Tag: <input id='tag-user-field' type=text size=12></input>";
         content += "<br />Chickenify<input id='chickenify' type=checkbox></input>";
@@ -51,6 +51,7 @@ function dialog_content(user) {
 }
 
 
+// Load current tage and chicken status into tag dialog
 function update_dialog(user) {
     chrome.storage.sync.get(null, function(result) {
         if (result.hasOwnProperty("chickenUsers")) {
@@ -83,12 +84,11 @@ function add_tag_icon(elem, user) {
             open: function() {
                 $(this).html(dialog_content(user));
             },
+            // TODO: canx button
             buttons: {
                 Save: function(event) {
                     save_tag(user);
-                    $('#tag-user-field').val('');
-                    $('#chickenify').prop("checked", false);
-                    $(this).dialog("close");
+                    $(this).dialog("destroy");
                 }
             },
             position: {
@@ -113,9 +113,7 @@ function add_tag_icon(elem, user) {
         var tagged_users = settings.taggedUsers;
         var chicken_users = settings.chickenUsers;
 
-        // TODO: should only be within id messages
-        // (try next + selector)
-        $('.discussion_post_name').each(function(index) {
+        $('#messages .discussion_post_name').each(function(index) {
             var user_str = user_regex.exec($(this).html());
             if (user_str == null) {
                 return;
@@ -142,14 +140,17 @@ function add_tag_icon(elem, user) {
 
 // TODO: save tag text
 function save_tag(user) {
-    console.log(user);
-    console.log($('#tag-user-field').val());
-    console.log($('#chickenify').prop('checked'));
     if ($('#chickenify').prop('checked')) {
         chrome.storage.sync.get('chickenUsers', function(result) {
             chickenUsers = result.chickenUsers;
-            chickenUsers.push(user);
-            chrome.storage.sync.set({'chickenUsers':chickenUsers});
+            var index = chickenUsers.indexOf(user);
+            if (index < 0) { 
+                chickenUsers.push(user);
+                chrome.storage.sync.set({'chickenUsers':chickenUsers});
+                var selector = '#messages .discussion_post_name:has(a[href$="' + user +'"])';
+                var msg = $(selector);
+                chickenify(msg.next());             
+            }
         });
     } else {
         chrome.storage.sync.get('chickenUsers', function(result) {
@@ -163,15 +164,6 @@ function save_tag(user) {
     }
 }
 
-
-// TODO?: Action to add tag 
-$(document).on("click", "#tag-user-field", function(event) {
-});
-
-
-// TODO?: Action to chickenify a user
-$(document).on("click", "#chickenify", function(event) {
-});
 
 // Borrowed from: 
 // https://gist.github.com/srsudar/e9a41228f06f32f272a2

@@ -1,7 +1,12 @@
  Cleaning up:
  ✔ use font awesome to tag and chickenify on the page @done (16-03-04 20:40)
  ☐ switch to alarms.api instead of setTimeout and make event page (background not persistant)
- ☐ chickenify after save on page
+ ☐ save new tag
+ ☐ add new tags to page
+ ☐ cancel button
+ ☐ check number of tags and chickenified user
+ ☐ link to follow new discussions on log
+ ✔ chickenify after save on page @done (16-03-06 23:07)
  ✔ populate dialog with current tag and chicken status  @done (16-03-05 22:32)
  ✔ icon @done (16-02-15 16:57)
  ☐ use jquery for basic DOM manipulation 
