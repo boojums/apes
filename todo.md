@@ -3,7 +3,7 @@
  ☐ switch to alarms.api instead of setTimeout and make event page (background not persistant)
  ☐ save new tag
  ☐ add new tags to page
- ☐ location of dialog
+ ✔ location of dialog @done (16-03-07 21:28)
  ✔ cancel button @done (16-03-07 21:24)
  ☐ check number of tags and chickenified user
  ☐ link to follow new discussions on log

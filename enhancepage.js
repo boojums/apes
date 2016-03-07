@@ -79,11 +79,11 @@ function add_tag_icon(elem, user) {
 
     tag.click(function() {
         $('<div />').html("Tag me").dialog({
-            modal: true,
             title: "Tag User " + user,
             open: function() {
                 $(this).html(dialog_content(user));
             },
+            closeOnEscape: true,
             buttons: {
                 Cancel: function() {
                     $(this).dialog("destroy");
@@ -94,8 +94,9 @@ function add_tag_icon(elem, user) {
                 }
             },
             position: {
-                my: "left center",
-                at: "left center"
+                my: "left top",
+                at: "right bottom",
+                of: tag
             }
         });
         update_dialog(user);
