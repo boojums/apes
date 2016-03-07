@@ -84,8 +84,10 @@ function add_tag_icon(elem, user) {
             open: function() {
                 $(this).html(dialog_content(user));
             },
-            // TODO: canx button
             buttons: {
+                Cancel: function() {
+                    $(this).dialog("destroy");
+                },
                 Save: function(event) {
                     save_tag(user);
                     $(this).dialog("destroy");

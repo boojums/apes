@@ -3,9 +3,11 @@
  ☐ switch to alarms.api instead of setTimeout and make event page (background not persistant)
  ☐ save new tag
  ☐ add new tags to page
- ☐ cancel button
+ ☐ location of dialog
+ ✔ cancel button @done (16-03-07 21:24)
  ☐ check number of tags and chickenified user
  ☐ link to follow new discussions on log
+ ☐ unchickenify after unchecked save on page
  ✔ chickenify after save on page @done (16-03-06 23:07)
  ✔ populate dialog with current tag and chicken status  @done (16-03-05 22:32)
  ✔ icon @done (16-02-15 16:57)
