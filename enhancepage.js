@@ -89,7 +89,9 @@ function add_tag_icon(elem, user) {
                     $(this).dialog("destroy");
                 },
                 Save: function(event) {
-                    save_tag(user);
+                    var checked = $('chickenify').prop('checked');
+                    var tag = $('#tag-user-field').val();
+                    save_tag(user, checked, tag); 
                     $(this).dialog("destroy");
                 }
             },
@@ -142,11 +144,21 @@ function add_tag_icon(elem, user) {
 
 
 // TODO: save tag text
-function save_tag(user) {
-    if ($('#chickenify').prop('checked')) {
-        chrome.storage.sync.get('chickenUsers', function(result) {
+function save_tag(user, checked, tag) {
+    chrome.storage.sync.get(null, function(result) {
+        var chickenUsers = [];
+        var taggedUsers = {};
+        if (result.hasOwnProperty('chickenUsers')) {
             chickenUsers = result.chickenUsers;
-            var index = chickenUsers.indexOf(user);
+        }
+        var index = chickenUsers.indexOf(user);
+
+        if (result.hasOwnProperty('taggedUsers')) {
+            taggedUsers = result.taggedUsers;
+        }
+
+        // Add user to chickenify list if not already there
+        if (checked) {
             if (index < 0) { 
                 chickenUsers.push(user);
                 chrome.storage.sync.set({'chickenUsers':chickenUsers});
@@ -154,17 +166,24 @@ function save_tag(user) {
                 var msg = $(selector);
                 chickenify(msg.next());             
             }
-        });
-    } else {
-        chrome.storage.sync.get('chickenUsers', function(result) {
-            chickenUsers = result.chickenUsers;
-            var index = chickenUsers.indexOf(user);
+        // Remove user from list if there
+        } else { 
+            // TODO: unchickenify on the page
             if (index > -1) {
                 chickenUsers.splice(index, 1);
                 chrome.storage.sync.set({'chickenUsers':chickenUsers});
             }            
-        })
-    }
+        }
+
+        // TODO: check for bad things
+        // TOOD: change tag on current page
+        // add/change user's tag
+        console.log(user);
+        console.log(taggedUsers);
+        taggedUsers[user] = tag;
+        console.log(taggedUsers);
+        chrome.storage.sync.set({'taggedUsers':taggedUsers});
+    });
 }
 
 

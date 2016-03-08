@@ -1,7 +1,7 @@
  Cleaning up:
  ✔ use font awesome to tag and chickenify on the page @done (16-03-04 20:40)
  ☐ switch to alarms.api instead of setTimeout and make event page (background not persistant)
- ☐ save new tag
+ ✔ save new tag @done (16-03-08 21:35)
  ☐ add new tags to page
  ✔ location of dialog @done (16-03-07 21:28)
  ✔ cancel button @done (16-03-07 21:24)
@@ -29,6 +29,7 @@
 Features:
  ☐ Max number of chicken (5) and tagged users (?)
  ☐ Tagging and removing from discussion pages?
+ ☐ User notifications instead of badges? no icon?
 
 Future:
  ☐ bootstrap for options page
