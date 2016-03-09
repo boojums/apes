@@ -25,11 +25,18 @@ function chickenify(elem) {
     $(elem).click([old_text, new_text], function(event) {
             ($(elem).html() === event.data[1]) ? 
                    $(elem).html(event.data[0]) : $(elem).html(event.data[1]);
-        });
+    });
 
 }
 
 
+// TODO: revert to regular text and leave it -- get data from click event?
+function unchickenify(elem) {
+
+}
+
+
+// TODO: clean up
 // Add tag under username in discussion posts
 function show_tag(elem, tag) {
     if ($(elem).hasClass('tag')) {
@@ -89,7 +96,7 @@ function add_tag_icon(elem, user) {
                     $(this).dialog("destroy");
                 },
                 Save: function(event) {
-                    var checked = $('chickenify').prop('checked');
+                    var checked = $('#chickenify').prop('checked');
                     var tag = $('#tag-user-field').val();
                     save_tag(user, checked, tag); 
                     $(this).dialog("destroy");
@@ -143,28 +150,24 @@ function add_tag_icon(elem, user) {
 })();
 
 
-// TODO: save tag text
+// Save chickenify and tag info from user dialog on discussion page.
 function save_tag(user, checked, tag) {
+    console.log(user, checked, tag);
+    var selector = '#messages .discussion_post_name:has(a[href$="' + user +'"])';
+    var msgs = $(selector);
+
     chrome.storage.sync.get(null, function(result) {
-        var chickenUsers = [];
-        var taggedUsers = {};
-        if (result.hasOwnProperty('chickenUsers')) {
-            chickenUsers = result.chickenUsers;
-        }
+        var chickenUsers = result.chickenUsers || [];
         var index = chickenUsers.indexOf(user);
 
-        if (result.hasOwnProperty('taggedUsers')) {
-            taggedUsers = result.taggedUsers;
-        }
+        var taggedUsers = result.taggedUsers || {};
 
         // Add user to chickenify list if not already there
         if (checked) {
             if (index < 0) { 
                 chickenUsers.push(user);
                 chrome.storage.sync.set({'chickenUsers':chickenUsers});
-                var selector = '#messages .discussion_post_name:has(a[href$="' + user +'"])';
-                var msg = $(selector);
-                chickenify(msg.next());             
+                chickenify(msgs.next());             
             }
         // Remove user from list if there
         } else { 
@@ -172,6 +175,7 @@ function save_tag(user, checked, tag) {
             if (index > -1) {
                 chickenUsers.splice(index, 1);
                 chrome.storage.sync.set({'chickenUsers':chickenUsers});
+                unchickenify(msgs.next());
             }            
         }
 
