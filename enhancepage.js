@@ -16,23 +16,26 @@ var user_regex = /user_([0-9]*)/;
 // Converts text of an element to 'chickens'. 
 // Caps retained, numbers and punctuation retained, for awesomeness.
 function chickenify(elem) {
-    old_text = $(elem).html()
+    var old_text = $(elem).html()
     $(elem).html($(elem).html().replace(loword_regex, "chicken"));
     $(elem).html($(elem).html().replace(capsword_regex, "Chicken"));
-    new_text = $(elem).html()
+    var new_text = $(elem).html()
 
     // Click text to toggle between original and chickenified
-    $(elem).click([old_text, new_text], function(event) {
-            ($(elem).html() === event.data[1]) ? 
-                   $(elem).html(event.data[0]) : $(elem).html(event.data[1]);
+    $(elem).on("click", [old_text, new_text], function(event) {
+        ($(elem).html() === event.data[1]) ? 
+               $(elem).html(event.data[0]) : $(elem).html(event.data[1]);
     });
 
 }
 
 
-// TODO: revert to regular text and leave it -- get data from click event?
+// Revert to original text and remove click event
 function unchickenify(elem) {
-
+    var events = jQuery._data($(elem)[0], "events");
+    var text = events['click'][0]['data'][0];
+    $(elem).html(text);
+    $(elem).unbind('click');
 }
 
 
@@ -152,7 +155,6 @@ function add_tag_icon(elem, user) {
 
 // Save chickenify and tag info from user dialog on discussion page.
 function save_tag(user, checked, tag) {
-    console.log(user, checked, tag);
     var selector = '#messages .discussion_post_name:has(a[href$="' + user +'"])';
     var msgs = $(selector);
 
@@ -167,7 +169,9 @@ function save_tag(user, checked, tag) {
             if (index < 0) { 
                 chickenUsers.push(user);
                 chrome.storage.sync.set({'chickenUsers':chickenUsers});
-                chickenify(msgs.next());             
+                msgs.each(function(index) {
+                    chickenify($(this).next()); 
+                });            
             }
         // Remove user from list if there
         } else { 
@@ -175,17 +179,16 @@ function save_tag(user, checked, tag) {
             if (index > -1) {
                 chickenUsers.splice(index, 1);
                 chrome.storage.sync.set({'chickenUsers':chickenUsers});
-                unchickenify(msgs.next());
+                msgs.each(function(index) {
+                    unchickenify($(this).next()); 
+                });            
             }            
         }
 
         // TODO: check for bad things
         // TOOD: change tag on current page
         // add/change user's tag
-        console.log(user);
-        console.log(taggedUsers);
         taggedUsers[user] = tag;
-        console.log(taggedUsers);
         chrome.storage.sync.set({'taggedUsers':taggedUsers});
     });
 }
