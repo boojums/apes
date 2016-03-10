@@ -7,7 +7,7 @@
  ✔ cancel button @done (16-03-07 21:24)
  ☐ check number of tags and chickenified user
  ☐ link to follow new discussions on log
- ☐ unchickenify after unchecked save on page
+ ✔ unchickenify after unchecked save on page @done (16-03-10 21:31)
  ✔ chickenify after save on page @done (16-03-06 23:07)
  ✔ populate dialog with current tag and chicken status  @done (16-03-05 22:32)
  ✔ icon @done (16-02-15 16:57)

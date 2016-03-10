@@ -39,18 +39,18 @@ function unchickenify(elem) {
 }
 
 
-// TODO: clean up
 // Add tag under username in discussion posts
 function show_tag(elem, tag) {
     if ($(elem).hasClass('tag')) {
         return;
     }
-    var newcontent = document.createElement("div");
-    newcontent.className = 'tag';
-    newcontent.style.color = "#aaaaaa";
-    newcontent.style.fontSize = "11px";
-    newcontent.innerHTML = tag;
-    $(elem).append(newcontent)
+    $(elem).append(
+        $('<div/>')
+            .attr("class", "tag")
+            .html(tag)
+            .css("color", "#aaaaaa"  )
+            .css("fontSize", "11px")
+    );
 }
 
 // Basic template for tag dialog
