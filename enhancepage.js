@@ -41,16 +41,19 @@ function unchickenify(elem) {
 
 // Add tag under username in discussion posts
 function show_tag(elem, tag) {
-    if ($(elem).hasClass('tag')) {
-        return;
+    console.log($(elem));
+    var field = $(elem).find('.tag');
+    if (field.length > 0) {
+        $(field[0]).html(tag);
+    } else {
+        $(elem).append(
+            $('<div/>')
+                .attr("class", "tag")
+                .html(tag)
+                .css("color", "#aaaaaa"  )
+                .css("fontSize", "11px")
+        );
     }
-    $(elem).append(
-        $('<div/>')
-            .attr("class", "tag")
-            .html(tag)
-            .css("color", "#aaaaaa"  )
-            .css("fontSize", "11px")
-    );
 }
 
 // Basic template for tag dialog
@@ -78,8 +81,9 @@ function update_dialog(user) {
     });
 }
 
-// TODO: make it clickable to add a tag and/or chickenify
-// TODO: try css/html5 modal dialog boxes instead
+
+// Adds a tag icon before username, click opens dialog for 
+// changing a tag or chickenifying a user's posts.
 function add_tag_icon(elem, user) {
     var tagid = "tag-" + user;
     var tag = $("<span>").attr("class", "fa fa-tag")
@@ -128,7 +132,7 @@ function add_tag_icon(elem, user) {
         var tagged_users = settings.taggedUsers;
         var chicken_users = settings.chickenUsers;
 
-        $('#messages .discussion_post_name').each(function(index) {
+        $('#messages .discussion_post_name').each(function() {
             var user_str = user_regex.exec($(this).html());
             if (user_str == null) {
                 return;
@@ -169,17 +173,16 @@ function save_tag(user, checked, tag) {
             if (index < 0) { 
                 chickenUsers.push(user);
                 chrome.storage.sync.set({'chickenUsers':chickenUsers});
-                msgs.each(function(index) {
+                msgs.each(function() {
                     chickenify($(this).next()); 
                 });            
             }
         // Remove user from list if there
         } else { 
-            // TODO: unchickenify on the page
             if (index > -1) {
                 chickenUsers.splice(index, 1);
                 chrome.storage.sync.set({'chickenUsers':chickenUsers});
-                msgs.each(function(index) {
+                msgs.each(function() {
                     unchickenify($(this).next()); 
                 });            
             }            
@@ -188,6 +191,9 @@ function save_tag(user, checked, tag) {
         // TODO: check for bad things
         // TOOD: change tag on current page
         // add/change user's tag
+        msgs.each(function() {
+            show_tag($(this), tag);
+        });
         taggedUsers[user] = tag;
         chrome.storage.sync.set({'taggedUsers':taggedUsers});
     });
