@@ -85,7 +85,7 @@ function showFlagStatus(statusText) {
 function loadOptions() {
     console.log('loading options');
     chrome.storage.sync.get(null, function(result) {
-        var chickenUsers = result.chickenUsers;
+        var chickenUsers = result.chickenUsers || [];
   
         var userString = '';        
         for (var i in chickenUsers) {
@@ -98,7 +98,7 @@ function loadOptions() {
             insertUsername(chickenUsers[i]);
         }
 
-        var taggedUsers = result.taggedUsers;
+        var taggedUsers = result.taggedUsers || {};
         userString = '';
         for (var usernum in taggedUsers) {
             userString += '<tr><td id="tag-username-'+usernum+'">' + usernum + '</td>' +
@@ -111,9 +111,12 @@ function loadOptions() {
             insertUsername(usernum);
         }
 
-        trackLog = result.trackLog;
-        $('#tracked-log').text(insertUsername(470));
-
+        var trackLog = result.trackLog || false;
+        if (trackLog) {
+            console.log(trackLog);
+            // TODO: text(insertUsername(trackLog));
+            $('#tracked-log-field').val(trackLog);
+        }
     });
 }
 
@@ -124,7 +127,7 @@ $("#add-tagged-user").click(function() {
     // TODO: check for duplicate user -- don't overwrite tag - notice that user already tagged
     var usernum = $("#tagged-user-field").val();
     chrome.storage.sync.get('taggedUsers', function(result) {
-        var taggedUsers = result.taggedUsers;
+        var taggedUsers = result.taggedUsers || {};
         console.log(taggedUsers);
         taggedUsers[usernum] = 'change me';
         console.log(taggedUsers);
@@ -153,7 +156,7 @@ $(document).on("change", ".tag-field", function(event) {
     var usernum = $(event.target).attr('id').slice(4);
     chrome.storage.sync.get('taggedUsers', function(result) {
         // TODO: hasownproperty
-        var taggedUsers = result.taggedUsers;
+        var taggedUsers = result.taggedUsers || {};
         console.log(taggedUsers);
         taggedUsers[usernum] = $(event.target).val();
         console.log(taggedUsers);
@@ -189,7 +192,7 @@ $("#add-chicken-user").click(function() {
     // TODO: check for duplicate user
     var user = $("#chicken-user-field").val();
     chrome.storage.sync.get('chickenUsers', function(result) {
-        chickenUsers = result.chickenUsers;
+        chickenUsers = result.chickenUsers || [];
         chickenUsers.push(user);
         chrome.storage.sync.set({'chickenUsers':chickenUsers});
         
@@ -235,8 +238,17 @@ $(document).on("click", ".remove-chicken", function(event) {
 
 document.addEventListener('DOMContentLoaded', loadOptions);
 // Populate storage For debugging
-$("#populate").click(populate);
+$("#add-track-log").on("click", function() {
+    var trackLog = $("#tracked-log-field").val();
+    console.log(trackLog);
+    // TODO: validate tracklog value
+    chrome.storage.sync.set({'trackLog': trackLog})
+});
 
+$("#populate").click(populate);
+$("#clear").on("click", function() {
+    chrome.storage.sync.clear();
+});
 
 // Function uses AP's own lastreadmessages function to 
 // see if message has been read, but this has many issues, not ideal

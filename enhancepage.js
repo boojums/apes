@@ -129,8 +129,8 @@ function add_tag_icon(elem, user) {
     }
     chrome.storage.sync.get(null, function(result) {
         var settings = result;
-        var tagged_users = settings.taggedUsers;
-        var chicken_users = settings.chickenUsers;
+        var tagged_users = settings.taggedUsers || {};
+        var chicken_users = settings.chickenUsers || [];
 
         $('#messages .discussion_post_name').each(function() {
             var user_str = user_regex.exec($(this).html());
@@ -142,7 +142,7 @@ function add_tag_icon(elem, user) {
 
             if (user_str) {
                 var user = user_str[1];
-            } // TODO: um, else don't do stuff...?
+            }
 
             if (chicken_users.indexOf(user) != -1) {
                 chickenify($(this).next());
@@ -189,7 +189,6 @@ function save_tag(user, checked, tag) {
         }
 
         // TODO: check for bad things
-        // TOOD: change tag on current page
         // add/change user's tag
         msgs.each(function() {
             show_tag($(this), tag);

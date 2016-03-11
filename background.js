@@ -6,7 +6,7 @@ var checkloguser;
 // Fetch checkloguser value right away
 (function getCheckloguser() {
     chrome.storage.sync.get(null, function(result) {
-        if (result.hasOwnProperty('trackLog')) {
+        if (result && result.hasOwnProperty('trackLog')) {
             checkloguser = result.trackLog; 
         }
     });
@@ -51,10 +51,10 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (match != null) { 
         message_id = match[1]
         chrome.storage.sync.get(null, function(result) {
-            if (result.hasOwnProperty('logMessages')) {
+            if (result && result.hasOwnProperty('logMessages')) {
                 var oldtable = result.logMessages;
             }
-            if (oldtable.hasOwnProperty(match[1])) {
+            if (oldtable && oldtable.hasOwnProperty(match[1])) {
                 chrome.storage.sync.set({'badge': ''});                
                 updateCommentTable(getDiscussionURL(checkloguser));
             }
