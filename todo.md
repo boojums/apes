@@ -21,7 +21,7 @@
  ☐ basic option page 
  ☐ option page on click
 
- ☐ error checking for storage (might be empty!)
+ ✔ error checking for storage (might be empty!) @done (16-03-12 09:57)
  ✔ when is highlighting affected? does reading the rss do it?  nope @done (15-11-16 11:34)
  ☐ save and retrieval user id (from options, used in background)
  ☐ generate discussion page url from user id

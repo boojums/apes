@@ -41,7 +41,6 @@ function unchickenify(elem) {
 
 // Add tag under username in discussion posts
 function show_tag(elem, tag) {
-    console.log($(elem));
     var field = $(elem).find('.tag');
     if (field.length > 0) {
         $(field[0]).html(tag);
@@ -53,6 +52,7 @@ function show_tag(elem, tag) {
                 .css("color", "#aaaaaa"  )
                 .css("fontSize", "11px")
         );
+        $(elem).next().css("min-height", "2.2em");
     }
 }
 
