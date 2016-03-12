@@ -44,6 +44,7 @@ function show_tag(elem, tag) {
     var field = $(elem).find('.tag');
     if (field.length > 0) {
         $(field[0]).html(tag);
+        $(elem).next().css("min-height", "1.2em");
     } else {
         $(elem).append(
             $('<div/>')
