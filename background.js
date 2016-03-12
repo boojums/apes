@@ -1,4 +1,7 @@
-// Copyright (c) 2014 Cristina Luis
+/*
+    Background script handles checking the followed log for new discussions,
+    updating the badge, and opening logs in new tabs. 
+*/
 
 // Keep the userid in 'state' since it is unlikely to change much
 var checkloguser;
@@ -7,8 +10,9 @@ var checkloguser;
 (function getCheckloguser() {
     chrome.storage.sync.get(null, function(result) {
         if (result && result.hasOwnProperty('trackLog')) {
-            checkloguser = result.trackLog; 
+            checkloguser = result.trackLog;
         }
+        worker();
     });
 })();
 
@@ -114,10 +118,15 @@ var parseCommentXML = function(xml) {
 // TODO: take url as arg, either call checking function
 // Might be possible to just get the top item and check that -- that should 
 // always change if there is a change to any discussion
-(function worker() {
+function worker() {
+    if (!checkloguser) {
+        setTimeout(worker, 60000)
+        console.log(checkloguser); 
+        return;
+    }
+
     log_url = getDiscussionURL(checkloguser);
     $.ajax({
-        // TODO: catch error gracefully?
         url: log_url,
         cache: false,
         crossDomain: true, 
@@ -136,23 +145,21 @@ var parseCommentXML = function(xml) {
             console.log(checkloguser);           
         }
     });
-})();
+}
 
 
-/////////////////
-// Click toolbar icon
-/////////////////
+// Toolbar icon click goes to AP or followed log
 chrome.browserAction.onClicked.addListener(function(tab) {
-    // TODO: go to discussions url? open options?
-    //chrome.tabs.create({url: 'http://www.attackpoint.org/'})
-    chrome.runtime.openOptionsPage()
+    var target_url = 'http://www.attackpoint.org/';
+    if (checkloguser) {
+        target_url += 'log.jsp/user_' + String(checkloguser);
+    }
+    chrome.tabs.create({url: target_url});
+    //chrome.runtime.openOptionsPage();
 });
 
 
-//////////////////////////
-// Open all unreads
-//////////////////////////
-// Opens all unread favorites in separate tabs
+// Open all unread favorites in separate tabs
 // Message is sent from openfavs.js when user clicks on 'open all' link
 function onRequest(request, sender, sendResponse) {
     
