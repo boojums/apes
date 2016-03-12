@@ -11,7 +11,7 @@
  ✔ chickenify after save on page @done (16-03-06 23:07)
  ✔ populate dialog with current tag and chicken status  @done (16-03-05 22:32)
  ✔ icon @done (16-02-15 16:57)
- ☐ use jquery for basic DOM manipulation 
+ ✔ use jquery for basic DOM manipulation @done (16-03-12 11:19)
  ✔ don't show the badge if it's your own comment! @done (16-02-15 17:03)
  ✔ use ajax for update @done (15-03-28 22:43)
  ✔ click on chicken text to unchickenify @done (15-03-25 22:14)

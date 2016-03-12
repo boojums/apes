@@ -41,16 +41,16 @@ function unchickenify(elem) {
 
 // Add tag under username in discussion posts
 function show_tag(elem, tag) {
-    console.log(tag);
-    console.log(tag.length);
     var field = $(elem).find('.tag');
+
+    var height = "2.2em";
+    if (tag.length == 0) {
+        height = "1.2em";
+    }
+    $(elem).next().css("min-height", height);
+
     if (field.length > 0) {
         $(field[0]).html(tag);
-        if (tag.length == 0) {
-            $(elem).next().css("min-height", "1.2em");
-        } else {
-            $(elem).next().css("min-height", "2.2em");
-        }
     } else {
         $(elem).append(
             $('<div/>')
@@ -59,13 +59,12 @@ function show_tag(elem, tag) {
                 .css("color", "#aaaaaa"  )
                 .css("fontSize", "11px")
         );
-        $(elem).next().css("min-height", "2.2em");
     }
 }
 
 // Basic template for tag dialog
 function dialog_content(user) {
-        var content = "Tag: <input id='tag-user-field' type=text size=12></input>";
+        var content = "Tag: <input id='tag-user-field' type=text size=12 maxlength=20></input>";
         content += "<br />Chickenify<input id='chickenify' type=checkbox></input>";
         return content;
 }
@@ -130,7 +129,7 @@ function add_tag_icon(elem, user) {
 
 // Run when page loads to find all users who needs tags or whose
 // text should be chickenified.
-(function() {
+$(function() {
     if (!document.getElementById('messages')) {
         return;
     }
@@ -161,7 +160,7 @@ function add_tag_icon(elem, user) {
             }
         });
     });
-})();
+});
 
 
 // Save chickenify and tag info from user dialog on discussion page.
@@ -184,7 +183,7 @@ function save_tag(user, checked, tag) {
                     chickenify($(this).next()); 
                 });            
             }
-        // Remove user from list if there
+        // Remove user from list if not checked and is there
         } else { 
             if (index > -1) {
                 chickenUsers.splice(index, 1);
@@ -195,12 +194,17 @@ function save_tag(user, checked, tag) {
             }            
         }
 
-        // TODO: check for bad things
-        // add/change user's tag
+        // Add/change/delete user's tag (with html input removed)
+        tag = tag.replace(/<.*>/g, '');
         msgs.each(function() {
             show_tag($(this), tag);
         });
-        taggedUsers[user] = tag;
+
+        if (tag.length == 0) {
+            delete taggedUsers[user];
+        } else {
+            taggedUsers[user] = tag;
+        }
         chrome.storage.sync.set({'taggedUsers':taggedUsers});
     });
 }
