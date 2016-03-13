@@ -163,6 +163,26 @@ $(function() {
 });
 
 
+// Add option to track log for new discussions
+$(function() {
+    var match = user_regex.exec($('#header li:contains("Log")').html());
+    var current_user = match[1];
+
+    match = user_regex.exec($('#contents h1:contains("Training Log") a').attr('href'));
+    if (match) {
+        var current_log = match[1];
+    } else {
+        return;
+    }
+
+    if (current_user == current_log) {
+        console.log("match!");
+        $('<li><a href="javascript:void(0)">moo</a></li>').on("click", function() {
+            console.log('track me')
+        }).appendTo($('div.sb.logmenu ul.narrowlist.condensed'));
+    }
+});
+
 // Save chickenify and tag info from user dialog on discussion page.
 function save_tag(user, checked, tag) {
     var selector = '#messages .discussion_post_name:has(a[href$="' + user +'"])';

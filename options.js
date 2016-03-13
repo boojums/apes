@@ -51,6 +51,7 @@ function insertUsername(user) {
             // TODO: error checking
             $("#chicken-"+user).prev().text(data.username);
             $("#tag-username-"+user).text(data.username);
+            $("#tracked-log").text(data.username);
         });
 }
 
@@ -114,7 +115,7 @@ function loadOptions() {
         var trackLog = result.trackLog || false;
         if (trackLog) {
             console.log(trackLog);
-            // TODO: text(insertUsername(trackLog));
+            insertUsername(trackLog);
             $('#tracked-log-field').val(trackLog);
         }
     });
@@ -148,7 +149,6 @@ $("#add-tagged-user").click(function() {
 });
 
 
-// TODO: Use save button instead
 // Action to save edited tag
 $(document).on("change", ".tag-field", function(event) {
     
