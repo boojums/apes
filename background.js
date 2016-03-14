@@ -26,7 +26,8 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
         chrome.browserAction.setBadgeText({text: changes.badge.newValue});
     }
     if (changes.hasOwnProperty('trackLog')) {
-        checkloguser = changes.trackLog;
+        checkloguser = changes.trackLog.newValue;
+        chrome.storage.sync.set({'badge': ''});                
     }
 });
 
@@ -121,7 +122,6 @@ var parseCommentXML = function(xml) {
 function worker() {
     if (!checkloguser) {
         setTimeout(worker, 60000)
-        console.log(checkloguser); 
         return;
     }
 
@@ -142,7 +142,6 @@ function worker() {
         complete: function() {
             // schedule next request for 1 minute from now
             setTimeout(worker, 60000)
-            console.log(checkloguser);           
         }
     });
 }

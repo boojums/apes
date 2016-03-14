@@ -175,13 +175,39 @@ $(function() {
         return;
     }
 
+    // Only show the track/untrack link if user is on their own log page
     if (current_user == current_log) {
-        console.log("match!");
-        $('<li><a href="javascript:void(0)">moo</a></li>').on("click", function() {
-            console.log('track me')
-        }).appendTo($('div.sb.logmenu ul.narrowlist.condensed'));
+        handle_tracklog(current_user);
     }
 });
+
+
+// Create track/untrack link that toggles whether or not the user's
+// discussions will be tracked for new messages.
+function handle_tracklog(user) {
+    chrome.storage.sync.get(null, function(result) {
+        var tracklog = result.trackLog || false;
+        var link = $('<li><a id="track" href="javasript:void(0)"></a></li>');
+        $(link).appendTo($('div.sb.logmenu ul.narrowlist.condensed'));
+
+        if (tracklog == user) {
+            $('#track').text('Untrack');
+        } else {
+            $('#track').text('Track');
+        }
+
+        $(link).on('click', function() {
+            var toggle = $('#track').text() === 'Track' ? 'Untrack' : 'Track';
+            $('#track').text(toggle);
+            if (toggle == 'Track') {
+                chrome.storage.sync.set({"trackLog": 0});
+            } else {
+                chrome.storage.sync.set({"trackLog": user});
+            }
+        });
+    });
+}
+
 
 // Save chickenify and tag info from user dialog on discussion page.
 function save_tag(user, checked, tag) {
