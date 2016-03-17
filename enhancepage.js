@@ -284,7 +284,7 @@ $('textarea').bind('paste', function(e) {
     e.preventDefault();
     var pasted = e.originalEvent.clipboardData.getData('text');
     var element = this;
-    var doma_re = /(http[s]?:\/\/[\S]+\/doma\/)show_map\.php\?user=[\w]+&map=([0-9]+)/;
+    var doma_re = /(http[s]?:\/\/[\S]+)\/show_map\.php\?user=[\w]+&map=([0-9]+)/;
     var match = doma_re.exec(pasted);
     if (match != null) {
         var url = match[1];
