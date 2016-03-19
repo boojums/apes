@@ -189,20 +189,22 @@ $(document).on("click", ".remove-tagged", function(event) {
 // Action to add a chicken user on click
 $("#add-chicken-user").click(function() {
     // TODO: validation of user
-    // TODO: check for duplicate user
     var user = $("#chicken-user-field").val();
     chrome.storage.sync.get('chickenUsers', function(result) {
         chickenUsers = result.chickenUsers || [];
-        chickenUsers.push(user);
-        chrome.storage.sync.set({'chickenUsers':chickenUsers});
-        
-        var userString = '<tr><td>' + user + '</td>' +
-                '<td class="remove-chicken" id="chicken-' + user + '">' + 
-                '[x]</rd></tr>';
-        $('#chicken-users > tbody:last').append(userString);
-        insertUsername(user);
+        if (chickenUsers.indexOf(user) != -1) {
+            var statusText = "User " + user + " already chickenified.";
+        } else {
+            chickenUsers.push(user);
+            chrome.storage.sync.set({'chickenUsers': chickenUsers});
+            var userString = '<tr><td>' + user + '</td>' +
+                    '<td class="remove-chicken" id="chicken-' + user + '">' + 
+                    '[x]</rd></tr>';
+            $('#chicken-users > tbody:last').append(userString);
+            insertUsername(user);
 
-        var statusText = "User " + user + " chickenified.";
+            var statusText = "User " + user + " chickenified.";
+        }
         showChickenStatus(statusText);
     });
 
