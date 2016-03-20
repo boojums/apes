@@ -125,29 +125,29 @@ function loadOptions() {
 // Action to add a tagged user on click
 $("#add-tagged-user").click(function() {
     // TODO: validation of user
-    // TODO: check for duplicate user -- don't overwrite tag - notice that user already tagged
     var usernum = $("#tagged-user-field").val();
     chrome.storage.sync.get('taggedUsers', function(result) {
         var taggedUsers = result.taggedUsers || {};
-        console.log(taggedUsers);
-        taggedUsers[usernum] = 'change me';
-        console.log(taggedUsers);
-        chrome.storage.sync.set({'taggedUsers':taggedUsers});
+        if (taggedUsers.hasOwnProperty(usernum)) {
+            var statusText = "User " + usernum + " is already tagged.";
+        } else {
+            taggedUsers[usernum] = 'change me';
+            chrome.storage.sync.set({'taggedUsers':taggedUsers});
 
-        var userString = '<tr><td id="tag-username-'+usernum+'">' + usernum + '</td>' +
-            '<td><input class="tag-field" type="text" id="tag-'+usernum+'" value="' + taggedUsers[usernum] + '"></input></rd>' + 
-            '<td class="remove-tagged" id="tagged-' + usernum + '">' + 
-                '[x]</td></tr>';
-        $('#tagged-users > tbody:last').append(userString);
-        insertUsername(usernum);
+            var userString = '<tr><td id="tag-username-'+usernum+'">' + usernum + '</td>' +
+                '<td><input class="tag-field" type="text" id="tag-'+usernum+'" value="' + taggedUsers[usernum] + '"></input></rd>' + 
+                '<td class="remove-tagged" id="tagged-' + usernum + '">' + 
+                    '[x]</td></tr>';
+            $('#tagged-users > tbody:last').append(userString);
+            insertUsername(usernum);
 
-        var statusText = "User " + usernum + " tagged.";
+            var statusText = "User " + usernum + " tagged.";
+        }
         showTaggedStatus(statusText);
     });
 
     $("#tagged-user-field").val("");
 });
-
 
 // Action to save edited tag
 $(document).on("change", ".tag-field", function(event) {
@@ -155,11 +155,8 @@ $(document).on("change", ".tag-field", function(event) {
     // Save edited tag
     var usernum = $(event.target).attr('id').slice(4);
     chrome.storage.sync.get('taggedUsers', function(result) {
-        // TODO: hasownproperty
         var taggedUsers = result.taggedUsers || {};
-        console.log(taggedUsers);
         taggedUsers[usernum] = $(event.target).val();
-        console.log(taggedUsers);
         chrome.storage.sync.set({'taggedUsers':taggedUsers});
 
         var statusText = "Tag updated.";
