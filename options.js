@@ -56,30 +56,12 @@ function insertUsername(user) {
 }
 
 // TODO: just make one function...
-function showChickenStatus(statusText) {
-    var status = $("#chicken-status");
+function showStatus(statusBox, statusText) {
+    var status = $(statusBox)
     status.text(statusText);   
     setTimeout(function() {
         status.text('');
         }, 
-        1500);
-}
-
-function showTaggedStatus(statusText) {
-    var status = $("#tagged-status");
-    status.text(statusText);   
-    setTimeout(function() {
-        status.text('');
-        }, 
-        1500);
-}
-
-function showFlagStatus(statusText) {
-    var status = $('#status');
-    status.text(statusText);
-    setTimeout(function() {
-        status.text('');
-        },
         1500);
 }
 
@@ -143,7 +125,7 @@ $("#add-tagged-user").click(function() {
 
             var statusText = "User " + usernum + " tagged.";
         }
-        showTaggedStatus(statusText);
+        showStatus("#tagged-status", statusText);
     });
 
     $("#tagged-user-field").val("");
@@ -159,8 +141,7 @@ $(document).on("change", ".tag-field", function(event) {
         taggedUsers[usernum] = $(event.target).val();
         chrome.storage.sync.set({'taggedUsers':taggedUsers});
 
-        var statusText = "Tag updated.";
-        showTaggedStatus(statusText);
+        showStatus("#tagged-status", "Tag updated");
     });
 
 });
@@ -178,7 +159,7 @@ $(document).on("click", ".remove-tagged", function(event) {
         $(event.target).parent().remove();
 
         var statusText = "User " + usernum + " untagged.";
-        showTaggedStatus(statusText);
+        showStatus("#tagged-status", statusText);
     });
 });
 
@@ -202,7 +183,7 @@ $("#add-chicken-user").click(function() {
 
             var statusText = "User " + user + " chickenified.";
         }
-        showChickenStatus(statusText);
+        showStatus("#chicken-status", statusText);
     });
 
     $("#chicken-user-field").val("");
@@ -211,8 +192,8 @@ $("#add-chicken-user").click(function() {
 
 // Action to follow log on click
 $("#flag").change(function() {
-        var statusText = "Following your log";
-        showFlagStatus(statusText);
+        var statusText = "Following this log";
+        showStatus("#status", statusText);
 });
 
 // Make sure new chicken users are removable on click
@@ -231,7 +212,7 @@ $(document).on("click", ".remove-chicken", function(event) {
         $(event.target).parent().remove();
 
         var statusText = "User " + usernum + " unchickenified.";
-        showChickenStatus(statusText);
+        showStatus("#chicken-status", statusText);
     });
 });
 
