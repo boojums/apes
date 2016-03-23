@@ -103,6 +103,7 @@ function add_tag_icon(elem, user) {
             open: function() {
                 $(this).html(dialog_content(user));
             },
+            modal: true,
             closeOnEscape: true,
             buttons: {
                 Cancel: function() {
