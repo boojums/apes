@@ -55,7 +55,7 @@ function insertUsername(user) {
         });
 }
 
-// TODO: just make one function...
+
 function showStatus(statusBox, statusText) {
     var status = $(statusBox)
     status.text(statusText);   
@@ -64,6 +64,7 @@ function showStatus(statusBox, statusText) {
         }, 
         1500);
 }
+
 
 function loadOptions() {
     console.log('loading options');
