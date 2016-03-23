@@ -3,13 +3,15 @@
 <head>
     <title>Options for AP Enhancement Suite</title>
     <style>
-        input[type=checkbox], input[type=radio]:
+        input[type=checkbox], input[type=radio]
         {
           vertical-align: -2px;
           margin: 4;
           padding: 0;
         }
-        body: { padding: 10px; }
+        body { padding: 10px; }
+
+        .status { min-height: 1.2em; }
     </style>
 </head>
 
@@ -21,7 +23,7 @@
     </table>
     <input id='tagged-user-field' type=text size=12></input>
     <button id='add-tagged-user'>Add Tagged User</button>
-    <div id="tagged-status">
+    <div class="status" id="tagged-status">
     </div>
     <br />
 
@@ -33,7 +35,7 @@
     </table>
     <input id='chicken-user-field' type=text size=12></input>
     <button id='add-chicken-user'>Add Chicken</button>
-    <div id="chicken-status">
+    <div class="status" id="chicken-status">
     </div>
 
     <h1>Track a log for new comments</h1>
@@ -42,12 +44,9 @@
     <input id='tracked-log-field' type=text size=12></input>
     <button id='add-track-log'>Track log</button>
 
-    <div id="status"></div>
+    <div class="status" id="status"></div>
 
     <br />
-
-    <button id="populate">Populate</button>
-    <button id="clear">Clear</button>
 
     <script src="jquery-1.11.1.min.js"></script>
     <script src="options.js"></script>
