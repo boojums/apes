@@ -18,7 +18,7 @@
  ✔ pick one method for changed page function @done (15-03-28 22:44)
    ✔ start with just user log comments @done (15-03-28 22:43)
  ✔ figure out storage method for options @done (15-03-28 22:44)
- ☐ basic option page 
+ ✔ basic option page  @done (16-03-24 21:37)
  ✔ error checking for storage (might be empty!) @done (16-03-12 09:57)
  ✔ when is highlighting affected? does reading the rss do it?  nope @done (15-11-16 11:34)
 
