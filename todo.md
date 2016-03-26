@@ -1,11 +1,13 @@
  Cleaning up:
  ✔ use font awesome to tag and chickenify on the page @done (16-03-04 20:40)
  ☐ switch to alarms.api instead of setTimeout and make event page (background not persistant)
+ ☐ trim down jqueryui css and js files
+ ☐ delete [x] (removeTag()) on dialog for tags
  ✔ save new tag @done (16-03-08 21:35)
  ✔ add new tags to page @done (16-03-10 22:18)
  ✔ location of dialog @done (16-03-07 21:28)
  ✔ cancel button @done (16-03-07 21:24)
- ☐ check number of tags and chickenified user
+ ☐ check number of tags and chickenified users
  ✔ link to follow new discussions on log @done (16-03-14 21:43)
  ✔ unchickenify after unchecked save on page @done (16-03-10 21:31)
  ✔ chickenify after save on page @done (16-03-06 23:07)
