@@ -290,7 +290,7 @@ $('textarea').bind('paste', function(e) {
     if (match != null) {
         var url = match[1];
         var mapnum = match[2];
-        var img_url = url + 'map_images/' + mapnum;
+        var img_url = url + '/map_images/' + mapnum;
         var img_block = '<a href='+pasted+'><img src='+img_url+'.thumbnail.jpg></a>';
         insertTextAtCursor(img_block);
     } else {
