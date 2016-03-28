@@ -64,7 +64,7 @@ function show_tag(elem, tag) {
 
 // Basic template for tag dialog
 function dialog_content(user) {
-        var content = "Tag: <input id='tag-user-field' type=text size=12 maxlength=20></input>";
+        var content = "<div>Tag: <input id='tag-user-field' type=text size=12 maxlength=20></input>[x]</div>";
         content += "<br />Chickenify<input id='chickenify' type=checkbox></input>";
         return content;
 }
